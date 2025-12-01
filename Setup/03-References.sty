@@ -1,0 +1,281 @@
+\urlstyle{rm}
+\hypersetup{
+	pdfborder={0 1 0},
+	pdfcreator=LuaLaTeX,
+        unicode=true,
+    pdftitle={Análisis de la tasa de homicidios dolosos en México utilizando Interpolación de Lagrange y Diferenciación e Integración Numérica},
+	pdfauthor={Vicente Chavarría Gámez},
+    pdfsubject={Proyecto de Métodos Numéricos II},
+    pdfkeywords={Homicidio doloso, Métodos Numéricos, Series de Tiempo, Interpolación de Lagrange, Predicción (Forecasting)},
+    % pdfpagemode=FullScreen,
+    % bookmarks=true,
+    % bookmarksopen=false,
+    linktocpage=true,
+	colorlinks=true,
+	linkcolor={[rgb]{0,0,0}},
+	linktoc=all,
+        citecolor={[rgb]{0,0,0}},
+        urlcolor={[rgb]{0,0,0}},
+        filecolor={[rgb]{0,0,0}}
+}
+
+\makeatletter
+\AtBeginDocument{
+    \def\Hy@colorlink#1{\begingroup\color{mainc}\let\@currentcolor\@empty}
+    \def\Hy@endcolorlink{\endgroup}
+}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%% Comandos para cambiar las referencias %%%%%%%%%%%%
+
+\renewbibmacro*{name:andothers}{% Usar "et al." cuando hay más de 5 autores
+    \ifboolexpr
+    {
+        test {\ifnumequal{\value{listcount}}{\value{liststop}}}
+        and
+        test \ifmorenames
+    }%
+    {
+        \ifnumgreater{\value{liststop}}{1}
+            {\finalandcomma}
+            {}%
+        \andothersdelim
+        \bibstring{andothers}%
+    }%
+    {}%
+}
+
+% Crear referencia para sitio web
+\DeclareFieldFormat[website]{title}{#1}
+\DeclareFieldFormat[website]{url}{\href{#1}{#1}}
+
+\DeclareBibliographyDriver{website}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \printnames{author}%
+  \setunit{\addperiod\addspace}%
+  \printfield{title}%
+  \newunit\newblock
+  \setunit{\addspace}%
+  \printtext{\printfield[parens]{year}; }
+  \printfield{url}
+  %\printfield{addendum}
+  \iflistundef{pageref}{}{\usebibmacro{pageref}}\iflistundef{shorthand}{}{\usebibmacro{shorthand}}}
+
+% Cambios en el estilo de referencia para artículos
+\DeclareBibliographyDriver{article}{%
+    \usebibmacro{bibindex}%
+    \usebibmacro{begentry}%
+    \printnames{author}%
+    \setunit{\addspace}%
+    \printfield{title}%
+    \newunit\newblock
+    \printfield{journaltitle}%
+    \setunit{\addspace}%
+    \printfield{volume}%
+    \setunit{\addcomma\addspace}%
+    \printfield{pages}%
+    \setunit{\addspace}%
+    \printfield{note}
+    \printtext{\printfield[parens]{year}. }
+    \iffieldundef{doi}
+        {}
+        {\href{\thefield{doi}}{\thefield{doi}}}
+    %\setunit{\addspace}%
+    %\usebibmacro{finentry}}
+    \iflistundef{pageref}{}{\usebibmacro{pageref}}\iflistundef{shorthand}{}{\usebibmacro{shorthand}}}
+
+% Cambios en la colección
+\DeclareBibliographyDriver{incollection}{%
+    \usebibmacro{bibindex}%
+    \usebibmacro{begentry}%
+    \printnames{author}%
+    \setunit{\addperiod\addspace}%
+    \printtext{en \printfield{booktitle}}%
+    \newunit\newblock
+    \setunit{\addspace}%
+    \printtext{(\bibstring{editors} \printnames{editor}) }
+    \printfield{pages}
+    \printfield{chapter}
+    \printtext{(\printlist{publisher}, \printfield{year}).}
+    \printfield{url}
+    \printfield{addendum}
+    \iflistundef{pageref}{}{\usebibmacro{pageref}}\iflistundef{shorthand}{}{\usebibmacro{shorthand}}}
+
+% Redefinir \cite para que no haya paréntesis
+\DeclareCiteCommand{\cite}
+    {}%
+    {\bibhyperref{\printfield{labelnumber}}}%
+    {\multicitedelim}%
+    {}%
+
+%%%%%%%%%%%%%%%%%%%% Fin de los comandos %%%%%%%%%%%%%%%%%
+
+\addbibresource{references.bib}
+
+
+% \makeatletter
+% \renewcommand{\tagform@}[1]{
+%     \text{
+%         \fontencoding{T1}\fontfamily{phv}\selectfont\color{mainc!80!white}\ignorespaces #1\unskip
+%     }
+% }
+% \makeatother
+
+
+% \renewcommand{\eqref}[1]{\text{{\fontencoding{T1}\fontfamily{phv}\selectfont(\ref{#1})}}}
+
+% =====================================================
+% Estilo base
+% =====================================================
+\newcommand{\refstyle}[1]{\textup{#1}}
+
+\ExplSyntaxOn
+
+% =====================================================
+% Enlace general (sin cambios)
+% =====================================================
+\cs_new:Npn \ref_env_link:nn #1#2 {
+  \refstyle{\hyperref[#1:#2]{\ref*{#1:#2}}}
+}
+
+% =====================================================
+% Mecanismo general de listas de referencias
+% =====================================================
+\cs_new_protected:Npn \ref_env_list:nnnn #1#2#3#4
+  {
+    \seq_set_split:Nnn \l_tmpa_seq { , } { #4 }
+    \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 1 }
+      {
+        #2~\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} }
+      }
+      {
+        \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 2 }
+          {
+            #3~
+            \ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} }~y~%
+            \ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {2} }
+          }
+          {
+            #3~
+            \seq_pop_right:NN \l_tmpa_seq \l_tmpb_tl
+            \seq_map_indexed_inline:Nn \l_tmpa_seq
+              {
+                \ref_env_link:nn {#1} {##2}%
+                \int_compare:nNnF {##1} = { \seq_count:N \l_tmpa_seq } {,~}
+              }
+            \space y~\ref_env_link:nn {#1} { \l_tmpb_tl }
+          }
+      }
+  }
+
+% =====================================================
+% Variante para ecuaciones con paréntesis
+% =====================================================
+\cs_new_protected:Npn \ref_env_list_paren:nnnn #1#2#3#4
+  {
+    \seq_set_split:Nnn \l_tmpa_seq { , } { #4 }
+    \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 1 }
+      {
+        #2~(\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} })
+      }
+      {
+        \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 2 }
+          {
+            #3~
+            (\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} })~y~%
+            (\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {2} })
+          }
+          {
+            #3~
+            \seq_pop_right:NN \l_tmpa_seq \l_tmpb_tl
+            \seq_map_indexed_inline:Nn \l_tmpa_seq
+              {
+                (\ref_env_link:nn {#1} {##2})%
+                \int_compare:nNnF {##1} = { \seq_count:N \l_tmpa_seq } {,~}
+              }
+            \space y~(\ref_env_link:nn {#1} { \l_tmpb_tl })
+          }
+      }
+  }
+
+% =====================================================
+% Comandos públicos
+% =====================================================
+\NewDocumentCommand{\refthm}{m}{\ref_env_list:nnnn {thm} {Teorema} {Teoremas} {#1}}
+\NewDocumentCommand{\refcor}{m}{\ref_env_list:nnnn {cor} {Corolario} {Corolarios} {#1}}
+\NewDocumentCommand{\refdef}{m}{\ref_env_list:nnnn {def} {Definición} {Definiciones} {#1}}
+\NewDocumentCommand{\reflemma}{m}{\ref_env_list:nnnn {lemma} {Lema} {Lemas} {#1}}
+\NewDocumentCommand{\refobs}{m}{\ref_env_list:nnnn {obs} {Observación} {Observaciones} {#1}}
+\NewDocumentCommand{\refprop}{m}{\ref_env_list:nnnn {prop} {Proposición} {Proposiciones} {#1}}
+\NewDocumentCommand{\refexample}{m}{\ref_env_list:nnnn {example} {Ejemplo} {Ejemplos} {#1}}
+\NewDocumentCommand{\refnote}{m}{
+    \ref_env_list:nnnn {note} {Nota} {Notas} {#1}
+}
+
+% =====================================================
+% Nuevo comando para ecuaciones con paréntesis
+% =====================================================
+\NewDocumentCommand{\refeqn}{m}{
+    \ref_env_list_paren:nnnn {eq} {Ecuación} {Ecuaciones} {#1}
+}
+
+\ExplSyntaxOff
+
+
+
+
+
+
+
+
+
+
+% % Referencias
+% \ExplSyntaxOn
+
+% \cs_new:Npn \ref_env_link:nn #1#2 {
+%   \refstyle{\hyperref[#1:#2]{\ref*{#1:#2}}}
+% }
+
+% \cs_new_protected:Npn \ref_env_list:nnnn #1#2#3#4
+%   {
+%     \seq_set_split:Nnn \l_tmpa_seq { , } { #4 }
+%     \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 1 }
+%       {
+%         % Caso: sólo una referencia
+%         #2~\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} }
+%       }
+%       {
+%         \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 2 }
+%           {
+%             % Caso: exactamente dos referencias (con espacio bien puesto)
+%             #3~
+%             \ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} }~y~%
+%             \ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {2} }
+%           }
+%           {
+%             % Caso: tres o más referencias
+%             #3~
+%             \seq_pop_right:NN \l_tmpa_seq \l_tmpb_tl
+%             \seq_map_inline:Nn \l_tmpa_seq
+%               {
+%                 \ref_env_link:nn {#1} {##1},\,
+%               }
+%             y~\ref_env_link:nn {#1} { \l_tmpb_tl }
+%           }
+%       }
+%   }
+
+% % Comandos públicos
+% \NewDocumentCommand{\refthm}{m}{\ref_env_list:nnnn {thm} {Teorema} {Teoremas} {#1}}
+% \NewDocumentCommand{\refcor}{m}{\ref_env_list:nnnn {cor} {Corolario} {Corolarios} {#1}}
+% \NewDocumentCommand{\refdef}{m}{\ref_env_list:nnnn {def} {Definición} {Definiciones} {#1}}
+% \NewDocumentCommand{\reflemma}{m}{\ref_env_list:nnnn {lemma} {Lema} {Lemas} {#1}}
+% \NewDocumentCommand{\refobs}{m}{\ref_env_list:nnnn {obs} {Observación} {Observaciones} {#1}}
+% \NewDocumentCommand{\refprop}{m}{\ref_env_list:nnnn {prop} {Proposición} {Proposiciones} {#1}}
+% \NewDocumentCommand{\refexample}{m}{\ref_env_list:nnnn {example} {Ejemplo} {Ejemplos} {#1}}
+% \NewDocumentCommand{\refnote}{m}{\ref_env_list:nnnn {note} {Nota} {Notas} {#1}}
+% \NewDocumentCommand{\refeq}{m}{\ref_env_list:nnnn {eq} {Ecuación} {Ecuaciones} {#1}}
+
+% \ExplSyntaxOff

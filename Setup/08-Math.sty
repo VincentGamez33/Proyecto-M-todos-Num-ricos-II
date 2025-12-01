@@ -1,0 +1,288 @@
+\newtcbtheorem{theorem}{}{
+    % Estilo del teorema
+    theorem style=change break,
+    enhanced,
+    breakable,
+    % Bordes
+    boxrule=0pt,
+    frame hidden,
+    borderline north={1pt}{0pt}{mainc},
+    borderline south={1pt}{0pt}{mainc},
+    % Sombra
+    % drop shadow={shadow xshift=0mm,shadow yshift=-0.8mm,opacity=0.25},
+    % Colores
+    colback=white,
+    coltitle=mainc,
+    attach title to upper={},
+    % Márgenes
+    left=-0.7mm,
+    right=-0.7mm,
+    top=-1mm,
+    bottom=1mm,
+    % Esquinas
+    sharp corners,
+    % Título
+    before title={Teorema~},
+    after title={~},
+    fonttitle=\par\noindent\creato\bfseries,
+    % Texto
+    fontupper=\normalsize\setlength{\parindent}{1em},
+}{thm}
+
+\newtcbtheorem{corollary}{}{
+    % Estilo del teorema
+    theorem style=change break,
+    enhanced,
+    breakable,
+    % Bordes
+    boxrule=0pt,
+    frame hidden,
+    borderline north={1pt}{0pt}{mainc},
+    borderline east={1pt}{0pt}{mainc},
+    borderline south={1pt}{0pt}{mainc},
+    % Sombra
+    drop shadow={shadow xshift=-0.7mm,shadow yshift=-0.7mm,opacity=0.25},
+    % Colores
+    colback=white,
+    coltitle=mainc,
+    attach title to upper={},
+    % Márgenes
+    left=-0.7mm,
+    right=1mm,
+    top=0mm,
+    bottom=1mm,
+    % Esquinas
+    sharp corners,
+    % Título
+    before title={Corolario~},
+    after title={~},
+    fonttitle=\par\noindent\creato\bfseries,
+    % Texto
+    fontupper=\normalsize\setlength{\parindent}{1em},
+}{cor}
+
+\newtcbtheorem{definition}{}{
+    % Estilo del teorema
+    theorem style=change break,
+    enhanced,
+    breakable,
+    % Bordes
+    boxrule=0pt,
+    frame hidden,
+    borderline east={1pt}{0pt}{mainc},
+    borderline south={1pt}{0pt}{mainc},
+    % Sombra
+    drop shadow={shadow xshift=0.8mm,shadow yshift=-0.7mm,opacity=0.25},
+    % Colores
+    colback=white,
+    coltitle=mainc,
+    attach title to upper={},
+    % Márgenes
+    left=1mm,
+    right=1mm,
+    top=0mm,
+    bottom=1mm,
+    % Esquinas
+    sharp corners,
+    % Título
+    before title={Definición~},
+    after title={~},
+    fonttitle=\par\noindent\creato\bfseries,
+    % Texto
+    fontupper=\normalsize\setlength{\parindent}{1em},
+}{def}
+
+\newtcbtheorem{lemma}{}{
+    % Estilo del teorema
+    theorem style=change break,
+    enhanced,
+    breakable,
+    % Bordes
+    boxrule=0pt,
+    frame hidden,
+    borderline north={1pt}{0pt}{mainc},
+    borderline south={1pt}{0pt}{mainc},
+    % Sombra
+    drop shadow={shadow xshift=0.8mm,shadow yshift=-0.7mm,opacity=0.25},
+    % Colores
+    colback=mainc!15,
+    coltitle=mainc,
+    attach title to upper={},
+    % Márgenes
+    left=1mm,
+    right=1mm,
+    top=0mm,
+    bottom=1mm,
+    % Esquinas
+    sharp corners,
+    % Título
+    before title={Lema~},
+    after title={~},
+    fonttitle=\par\noindent\creato\bfseries,
+    % Texto
+    fontupper=\normalsize\setlength{\parindent}{1em},
+}{lemma}
+
+\newtcbtheorem{proposition}{}{
+    % Estilo del teorema
+    theorem style=change break,
+    enhanced,
+    breakable,
+    % Bordes
+    boxrule=0pt,
+    frame hidden,
+    borderline west={1pt}{0pt}{mainc},
+    borderline north={1pt}{0pt}{mainc},
+    % Colores
+    colback=white,
+    coltitle=mainc,
+    attach title to upper={},
+    % Márgenes
+    left=0.7mm,
+    right=-0.7mm,
+    top=-0.7mm,
+    bottom=-0.7mm,
+    % Esquinas
+    sharp corners,
+    % Título
+    before title={Proposición~},
+    after title={~},
+    fonttitle=\par\noindent\creato\bfseries,
+    % Texto
+    fontupper=\normalsize\setlength{\parindent}{1em},
+}{prop}
+
+\newtcbtheorem{example}{}{
+    % Estilo del teorema
+    theorem style=change break,
+    enhanced,
+    breakable,
+    % Bordes
+    boxrule=0pt,
+    frame hidden,
+    borderline west={1pt}{0pt}{mainc},
+    % Colores
+    colback=white,
+    coltitle=mainc,
+    attach title to upper={},
+    % Márgenes
+    left=0.5mm,
+    right=-0.7mm,
+    top=-1.3mm,
+    bottom=0.5mm,
+    % Esquinas
+    sharp corners,
+    % Título
+    before title={Ejemplo~},
+    after title={~},
+    fonttitle=\par\noindent\creato\bfseries,
+    % Texto
+    fontupper=\normalsize\setlength{\parindent}{1em},
+    % Superposición
+    overlay={
+        \draw[mainc,line width=1pt] (frame.south west) -- ($(frame.south west)+(0.3\linewidth,0)$);
+    },
+}{exm}
+
+
+\NewDocumentCommand{\RR}{oo}{\mathbb{R}\IfValueT{#1}{^{#1}}\IfValueT{#2}{_{#2}}}
+\NewDocumentCommand{\NN}{oo}{\mathbb{N}\IfValueT{#1}{^{#1}}\IfValueT{#2}{_{#2}}}
+\NewDocumentCommand{\ZZ}{oo}{\mathbb{Z}\IfValueT{#1}{^{#1}}\IfValueT{#2}{_{#2}}}
+\NewDocumentCommand{\QQ}{oo}{\mathbb{Q}\IfValueT{#1}{^{#1}}\IfValueT{#2}{_{#2}}}
+\NewDocumentCommand{\CC}{oo}{\mathbb{C}\IfValueT{#1}{^{#1}}\IfValueT{#2}{_{#2}}}
+% - Valor esperado
+\newcommand{\EE}{\mathbb{E}}
+
+
+\makeatletter
+
+% ==================================================
+% Símbolos personalizados
+% ==================================================
+\newcommand{\Square}{\textcolor{mainc}{\ensuremath{\square}}}
+\newcommand{\Blacksquare}{\textcolor{mainc}{\ensuremath{\blacksquare}}}
+
+% ==================================================
+% Condition flag
+% ==================================================
+\newif\if@qedused
+\@qedusedfalse
+
+% ==================================================
+% Comando para insertar el símbolo dentro del entorno
+% ==================================================
+\newcommand{\QEDwhite}{%
+    \global\@qedusedtrue%
+    \ifmmode
+        \tag*{\Square}% para equation, align, etc.
+    \else
+        \unskip\nobreak\hfill\hbox{\Square}%
+    \fi
+}
+
+\newcommand{\QEDblack}{%
+    \global\@qedusedtrue%
+    \ifmmode
+        \tag*{\Blacksquare}% para equation, align, etc.
+    \else
+        \unskip\nobreak\hfill\hbox{\Blacksquare}%
+    \fi
+}
+
+% ==================================================
+% Entorno de Solución
+% ==================================================
+\newenvironment{solucion}{%
+    \par\noindent
+    \begingroup\normalfont
+        \global\@qedusedfalse% reinicia el flag
+        \textcolor{mainc}{\Lato\bfseries\itshape Solución.}%
+        \hspace{0.5em plus 0.2em minus 0.1em}%
+        \ignorespaces
+}{%
+        \if@qedused
+        \else
+            \unskip\nobreak\hfill\hbox{\Square}%
+        \fi
+    \par\endgroup
+}
+
+% ==================================================
+% Entorno de Demostración
+% ==================================================
+\newenvironment{demostracion}{%
+    \par\noindent
+    \begingroup\normalfont
+    \global\@qedusedfalse% reinicia el flag
+    \textcolor{mainc}{\Lato\bfseries\itshape Demostración.}%
+    \hspace{0.5em plus 0.2em minus 0.1em}%
+    \ignorespaces
+}{%
+    \if@qedused
+    \else
+        \unskip\nobreak\hfill\hbox{\Blacksquare}%
+    \fi
+    \par\endgroup
+}
+
+\makeatother
+
+\DeclarePairedDelimiter\parens{\lparen}{\rparen}
+\DeclarePairedDelimiter\llaves{\{}{\}}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+\DeclarePairedDelimiter\norm{\|}{\|}
+
+\DeclarePairedDelimiterX\ip[2]{\langle}{\rangle}{#1, #2}
+
+\DeclarePairedDelimiterX\suces[2]{\{}{\}}{#1, #2}
+
+\DeclarePairedDelimiterX\paror[2]{(}{)}{#1, #2}
+\newcommand{\dist}{d\paror}
+
+\DeclarePairedDelimiterX\metAux[2]{(}{)}{#1, #2}
+\newcommand{\met}{\rho\metAux}
+
+\NewDocumentCommand{\neada}{ O{n} m }{%
+    ( #2_{1}, #2_{2}, \dots, #2_{#1} )%
+}

@@ -1,0 +1,125 @@
+\section{Preliminares}\label{sec:02-pre}
+
+\subsection{Interpolación de Lagrange}
+\lipsum[1]\cite{Burden}
+\begin{definition}{}{lagrange_polynomials}
+    Sean $x_0, x_1, \ldots, x_n$, $n + 1$ números distintos y $f$ es una función cuyos valores están dados por estos números. Entonces el único polinomio $P(x)$ de grado a lo más $n$ existe, tal que
+    \[ f(x_j) = P(x_j), \quad \text{para toda } j\in\{0,1,\ldots,n\}. \]
+    Dicho polinomio está dado por
+    \begin{equation}
+        P(x) = f(x_0)L_{n,0}(x) + f(x_1)L_{n,1}(x) + \cdots + f(x_j)L_{n,n}(x) = \sum_{j=0}^n f(x_j)L_{n,j}(x)
+    \end{equation}
+    donde, para toda $j \in \{0,1,\ldots,n\}$, se cumple
+    \[ L_{n,j}(x) = \frac{(x-x_0)(x-x_1)\cdots(x-x_{j-1})(x-x_{j+1})\cdots(x-x_n)}{(x_j-x_0)(x_j-x_1)\cdots(x_j-x_{j-1})(x_j-x_{j+1})\cdots(x_j - x_n)}, \]
+    o bien,
+    \begin{equation}
+        L_{n,j}(x) = \prod_{\substack{k = 0\\k \neq j}}^n \frac{(x - x_k)}{(x_j - x_k)}.
+    \end{equation}
+\end{definition}
+% \begin{definition}{}{Lagrange_polynomials}
+%     Si $x_0, x_1, \ldots, x_n$ son $n + 1$ números distintos y $f$ es una función cuyos valores están dados por estos números. Entonces el único polinomio $P(x)$ de grado a lo más $n$ existe, tal que
+%     \[ f(x_k) = P(x_k), \quad \text{para cada } k\in\{0,1,\ldots,n\}. \]
+%     Dicho polinomio está dado por
+%     \begin{equation}
+%         P(x) = f(x_0)L_{n,0}(x) + f(x_1)L_{n,1}(x) + \cdots + f(x_n)L_{n,n}(x) = \sum_{j=0}^n f(x_j)L_{n,j}(x)
+%     \end{equation}
+%     donde, para cada $j\in\{0,1,\ldots,n\}$, se cumple
+%     \[ L_{n,j}(x) = \frac{(x-x_0)(x-x_1)\cdots(x-x_{j-1})(x-x_{j+1})\cdots(x-x_n)}{(x_j-x_0)(x_j-x_1)\cdots(x_j-x_{j-1})(x_j-x_{j+1})\cdots(x_j - x_n)}, \]
+%     o bien,
+%     \begin{equation}
+%         L_{n,j}(x) = \prod_{\substack{k = 0\\k \neq j}}^n \frac{(x - x_k)}{(x_j - x_k)}.
+%     \end{equation}
+% \end{definition}
+
+\lipsum[3-5]
+\begin{code}[Implementación de los Polinomios de Lagrange en Python.]
+    \inputminted{python}{Code/Python/02-Interpolacion/interpolacion_Lagrange.py}
+\end{code}
+
+\subsection{Diferenciación Numérica}
+\lipsum[6-8]
+\begin{code}[Implementación de la Aproximación de la Derivada en Python.]
+    \inputminted{python}{Code/Python/03-Diferenciacion/derivacion_numerica.py}
+\end{code}
+
+\subsection{Integración Numérica}
+\lipsum[9]
+% =========================================
+% Teorema para analizar el error
+% =========================================
+\begin{theorem}{}{TdE}
+    Dada una función $f \in C^{n+1}([a,b])$ y $a \le x_0 < x_1 < x_2 < \cdots < x_n \le b$, $n+1$ números distintos. Entonces para toda $x \in [a,b]$ existe un número $\xi_x \in (a,b)$, de tal forma que
+    \[ f(x) = P_n(x) + \frac{f^{n+1}(\xi_x)}{(n+1!)} \prod_{j=0}^n (x - x_j) \]
+    donde $\displaystyle P_n(x) = \sum_{j=0}^n f(x_j)L_{n,j}(x)$ y $\displaystyle L_{n,j}(x) = \prod_{\substack{k = 0\\k \neq j}}^n \frac{(x - x_k)}{(x_j - x_k)}$.
+\end{theorem}
+% =========================================
+% Teorema del Valor Medio Ponderado (con peso) para integrales
+% =========================================
+\begin{theorem}{}{TVMWI}
+    Dada una función $f \in C([a,b])$ y dada $g:[a,b] \to \RR[+][0]$ tal que $g(x) \ge 0$ para toda $x \in [a,b]$ una función integrable. Entonces existe $c \in [a,b]$ de tal forma que
+    \[ \int_a^b f(x)g(x)\,dx = f(c)\int_a^b g(x)\,dx \]
+\end{theorem}
+\lipsum[10]
+% =========================================
+% Deducción de la Regla Trapezoidal
+% =========================================
+\begin{theorem}{}{}
+    Dada una función $f \in C^2([a,b])$. Sea $x_0 < x_1$ tal que $x_0 = a$ y $x_1 = a + h = b$ donde $h=x_1-x_0$. Demostrar que la Regla Trapezoidal está dada por
+    \[ \int_{x_0}^{x_1} f(x)\,dx = \frac{h}{2}[f(x_0) + f(x_1)] - \frac{h^3\,f^{(2)}(\xi_c)}{12}. \]
+\end{theorem}
+\begin{demostracion}
+    De acuerdo con el \refthm{TdE} y la \refdef{lagrange_polynomials} nuestra aproximación para la función $f(x)$ es de la forma
+    \begin{equation}\label{eq:03-fx}
+        f(x) = f(x_0)L_{1,0}(x) + f(x_1)L_{1,1}(x) + E_1(x)
+    \end{equation}
+    donde
+    \begin{align}
+        L_{1,0}(x) &= \frac{x - x_1}{x_0 - x_1} = -\frac{x - x_1}{h}, \label{eq:04-L10} \\
+        L_{1,1}(x) &= \frac{x - x_0}{x_1 - x_0} = \frac{x - x_0}{h}, \label{eq:05-L11}
+        \intertext{y por el \refthm{TdE}}
+        E_1(x) &= \dfrac{f^{(2)}(\xi_x)}{2}(x - x_0)(x - x_1)
+    \end{align}
+    ---$E_1(x)$ es el término de error\footnote{Dicho termino de error será tratado más adelante}---. Luego, nuestra aproximación a la integral definida de $a$ a $b$ es de la forma
+    \[ \int_a^b f(x)\,dx = \int_a^b [f(x_0)L_{1,0}(x) + f(x_1)L_{1,1}(x)]\,dx + \int_a^b E_1(x)\,dx, \]
+    o bien
+    \[ \int_a^b f(x)\,dx = f(x_0)\int_a^b L_{1,0}(x)\,dx + f(x_1)\int_a^b L_{1,1}(x)\,dx + \int_a^b E_1(x)\,dx \]
+    Por hipótesis sabemos que $a = x_0$ y $b = x_1$, obteniendo
+    \begin{equation}\label{eq:06-int}
+        \int_{x_0}^{x_1} f(x)\,dx = f(x_0)\int_{x_0}^{x_1} L_{1,0}(x)\,dx + f(x_1)\int_{x_0}^{x_1} L_{1,1}(x)\,dx + \int_{x_0}^{x_1} E_1(x)\,dx.
+    \end{equation}
+    Ahora, sustituyendo a las \refeqn{04-L10,05-L11} e integrando por separado a $L_{1,0}(x)$ y $L_{1,1}(x)$. Se sigue para $L_{1,0}(x)$
+    \[ \int_{x_0}^{x_1} L_{1,0}(x)\,dx = \int_{x_0}^{x_1}\frac{x - x_1}{h} = -\frac{1}{2h}(x - x_1)^2 \Big|_{x_0}^{x_1} = -\frac{(x_0 - x_1)^2}{2h} = \frac{(x_1 - x_0)^2}{2h} = \frac{h^2}{2h} = \frac{h}{2}. \]
+    Análogamente, para $L_{1,1}(x)$ hacemos
+    \[ \int_{x_0}^{x_1} L_{1,1}(x)\,dx = \int_{x_0}^{x_1} \frac{x - x_0}{h}\,dx = \frac{1}{2h} (x - x_0)^2\Big|_{x_0}^{x_1} = \frac{(x_1 - x_0)^2}{2h} = \frac{h^2}{2h} = \frac{h}{2}. \]
+    Sustituyendo lo anterior en la \refeqn{06-int} tenemos
+    \[ \int_{x_0}^{x_1} f(x)\,dx = f(x_0)\frac{h}{2} + f(x_1)\frac{h}{2} + \int_{x_0}^{x_1} E_1(x)\,dx, \]
+    o bien
+    \begin{equation}\label{eq:07-analisis-error}
+        \int_{x_0}^{x_1} f(x)\,dx = \frac{h}{2}[f(x_0) + f(x_1)] + \int_{x_0}^{x_1} E_1(x)\,dx.
+    \end{equation}
+    Ahora, analizaremos el error. De la \refeqn{07-analisis-error} se sigue
+    \[ \int_{x_0}^{x_1} E_1(x)\,dx = \int_{x_0}^{x_1} \frac{f^{(2)}(\xi_x)}{2}(x - x_0)(x - x_1)\,dx \]
+    Por el \refthm{TVMWI}, sean $f(x) = \dfrac{f^{(2)}(\xi_x)}{2}$ y $g(x) = (x - x_0)(x - x_1)$. Entonces existe $c \in [a,b]$ de tal forma que $\xi_c \in (a,b)$. Esto es
+    \begin{equation}\label{eq:08-ahhhh}
+        \int_{x_0}^{x_1} E_1(x)\,dx = \frac{f^{(2)}(\xi_c)}{2}\int_{x_0}^{x_1} (x - x_0)(x - x_1)\,dx.
+    \end{equation}
+    Ahora bien, para resolver la integral, procederemos integrando por partes. Sean $u = x - x_0$ y $dv = (x - x_1)\,dx$, entonces $du = dx$ y $v = \dfrac{(x - x_1)^2}{2}$. Integrando
+    \[ \int_{x_0}^{x_1} (x - x_0)(x - x_1)\,dx = (x - x_0)\frac{(x - x_1)^2}{2}\Bigg|_{x_0}^{x_1} - \frac{1}{2}\int_{x_0}^{x_1} (x - x_1)^2\,dx \]
+    Al evaluar el primer término en cada límite, el resultado es 0 en ambos casos. Así,
+    \[ \int_{x_0}^{x_1} (x - x_0)(x - x_1)\,dx = -\frac{1}{2 \cdot 3}(x - x_1)^3\Big|_{x_0}^{x_1} = -\frac{1}{6} \left(0 - (x_0 - x_1)^3\right) = -\frac{(x_1 - x_0)^3}{6} = -\frac{h^3}{6}. \]
+    Sustituyendo el valor de la integral en la \refeqn{08-ahhhh}, obtenemos
+    \[ \int_{x_0}^{x_1} E_1(x)\,dx = -\frac{f^{(2)}(\xi_c)}{2}\cdot\frac{h^3}{6}, \]
+    o bien,
+    \begin{equation}\label{eq:09-ahhhhhhhhh}
+        \int_{x_0}^{x_1} E_1(x)\,dx = -\frac{h^3\,f^{(2)}(\xi_c)}{12}.
+    \end{equation}
+    Finalmente, sustituyendo la \refeqn{09-ahhhhhhhhh} en la \refeqn{07-analisis-error}
+    \begin{equation}
+        \int_{x_0}^{x_1} f(x)\,dx = \frac{h}{2}[f(x_0) + f(x_1)] - \frac{h^3\,f^{(2)}(\xi_c)}{12}.
+    \end{equation}
+    Por lo tanto, queda demostrado que la \textbf{Regla Trapezoidal} es de la forma
+    \[ \int_{x_0}^{x_1} f(x)\,dx = \frac{h}{2}[f(x_0) + f(x_1)] - \frac{h^3\,f^{(2)}(\xi_c)}{12}. \QEDblack \]
+\end{demostracion}
+\begin{code}[Implementación de la Aproximación de la Integral de Riemann en Python.]
+    \inputminted{python}{Code/Python/04-Integracion/integracion_numerica.py}
+\end{code}

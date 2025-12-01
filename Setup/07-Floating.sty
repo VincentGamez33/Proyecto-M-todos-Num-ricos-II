@@ -1,0 +1,68 @@
+\DeclareCaptionFont{ipn}{\sffamily\bfseries\color{mainc}}
+\DeclareCaptionJustification{justified}{\justifying}
+\DeclareCaptionLabelFormat{custom}{#2)}
+
+\captionsetup{
+    justification={justified},
+    labelfont={ipn},
+    font={footnotesize},
+    singlelinecheck=true,
+    labelsep={colon},
+    strut=yes,
+    skip=2mm
+}
+
+\floatsetup[figure]{
+    floatwidth=\textwidth,
+    justification={justified},
+}
+
+\floatsetup[table]{
+    floatwidth=\textwidth,
+    justification={justified},
+}
+
+\captionsetup[subfigure]{
+    labelformat={custom},
+    labelfont={ipn},
+    font={footnotesize}
+}
+
+
+% =====================================
+% "Flotante" falso para código fuente
+% ====================================
+% Contador independiente
+\newcounter{code}[section]
+\renewcommand{\thecode}{\thesection.\arabic{code}} % Ej. Código 2.1
+
+\DeclareCaptionFont{Code}{\sffamily\bfseries\color{mainc}\selectfont}
+% Estilo de caption
+\captionsetup[code]{
+    justification={justified},
+    labelfont={Code},
+    font={footnotesize}, % << controla la fuente
+    labelsep=colon,
+    position=top,
+    aboveskip=4pt,  % << espacio antes del caption
+    belowskip=6pt,  % << espacio después del caption
+    strut=yes,
+}
+
+% Comando de caption para el entorno
+\newcommand{\codecaption}[1]{%
+    \refstepcounter{code}%
+    \captionsetup{type=code}%
+    {\captionsetup{aboveskip=-0.5em,belowskip=-0.3em}%
+    \caption*{{\sffamily\bfseries\color{mainc}\selectfont Código~\thecode:}~#1}}%
+}
+
+% Entorno no flotante, rompible
+\newenvironment{code}[1][]{
+    \vspace{\abovecaptionskip}%
+    \noindent
+    \codecaption{#1}
+    \vspace{\belowcaptionskip}%
+}{
+    \vspace{0.75em}\par
+}

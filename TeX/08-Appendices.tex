@@ -1,0 +1,32 @@
+\section{Justificación Metodológica de la Aproximación Polinómica por Tramos}
+
+\subsection{Limitaciones de la Interpolación Polinómica de Alto Grado}
+
+Para un conjunto de $n+1$ puntos de datos, como la serie de tiempo \texttt{Nacional\_Mensual} ($n=128$), es teóricamente posible construir un único polinomio de grado $n$ que pase exactamente por todos los puntos. Sin embargo, en la práctica, el uso de polinomios de interpolación de grado muy alto presenta serias desventajas numéricas.
+
+El problema fundamental fue ilustrado por Carl Runge en 1901. El \textbf{fenómeno de Runge} demuestra que, para ciertos conjuntos de puntos (especialmente aquellos equiespaciados), el polinomio de interpolación de alto grado puede presentar \textbf{oscilaciones violentas} cerca de los extremos del intervalo. Estas oscilaciones provocan que el error de aproximación, lejos de disminuir al añadir más puntos, diverja drásticamente.
+
+El ejemplo clásico es la función $f(x) = \frac{1}{x}$. Al interpolar esta función con un polinomio de alto grado, el polinomio resultante oscila de manera incontrolada en los extremos, fallando en representar la función real.
+
+Los datos de este proyecto (víctimas de homicidio) son inherentemente ``ruidosos'' e irregulares. Intentar ajustar un único polinomio de grado 128 a los 129 puntos de la serie \texttt{Nacional\_Mensual} resultaría en un modelo numéricamente inestable y un ejemplo claro del fenómeno de Runge, produciendo un polinomio con oscilaciones extremas y nulo valor predictivo.
+
+\subsection{Aproximación Polinómica por Tramos (Piecewise-Polynomial Approximation)}
+
+Para mitigar los problemas de la interpolación de alto grado, la estrategia numéricamente robusta es la \textbf{Aproximación Polinómica por Tramos}.
+
+Este método, descrito en textos de análisis numérico como Burden \& Faires (9ª ed., Sección 3.5), consiste en dividir el intervalo completo de datos en una serie de sub-intervalos más pequeños (o ``tramos''). En lugar de un solo polinomio de alto grado, se construye un polinomio de \textbf{grado bajo} (e.g., grado 3, 5, o 9) para cada tramo.
+
+Las ventajas de este enfoque son significativas:
+\begin{enumerate}
+    \item \textbf{Evita el Fenómeno de Runge:} Al utilizar exclusivamente polinomios de grado bajo, se eliminan las oscilaciones de alto grado.
+    \item \textbf{Adaptabilidad Local:} Cada polinomio se ajusta a la tendencia \textit{local} de los datos en su tramo. Esto es ideal para series de tiempo, permitiendo que el modelo se adapte a picos, valles y cambios de tendencia sin distorsionar la aproximación global.
+    \item \textbf{Estabilidad Numérica:} El cálculo de varios polinomios de grado bajo es computacionalmente más simple y menos susceptible a errores de redondeo que un solo sistema de alto grado.
+\end{enumerate}
+
+\subsection{Aplicación en este Proyecto}
+
+Este proyecto implementó una \textbf{Aproximación Polinómica por Tramos} (Sección \ref{sec:03-res}). La serie de tiempo \texttt{Nacional\_Mensual} se dividió en tramos consecutivos de 10 puntos, y para cada tramo se construyó un polinomio de interpolación de Lagrange de grado 9.
+
+Este enfoque permite un análisis local preciso (necesario para las derivadas, Sección \ref{sec:04-conclu}) y una integración robusta (Sección \ref{sec:05-dis}), sacrificando la continuidad global de las derivadas (que no es un objetivo de este análisis) en favor de la estabilidad y la precisión local.
+
+Una evolución de este método son los \textbf{Trazadores Cúbicos (Cubic Splines)}, los cuales son polinomios por tramos de grado 3 que imponen condiciones de continuidad en la primera y segunda derivada ($C^2$), garantizando una curva ``suave'' en los puntos de unión (nodos). Sin embargo, para los fines de este trabajo, la aproximación por tramos de Lagrange es la metodología especificada y aplicada.

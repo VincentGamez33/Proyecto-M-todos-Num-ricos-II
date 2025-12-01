@@ -1,0 +1,72 @@
+\usepackage{fix-cm}
+
+\newcommand{\myline}{
+    \vspace*{2mm}
+    \begin{center}
+        \color{mainc}\rule{\textwidth}{2pt}
+    \end{center}
+}
+
+\newcommand*{\YZraggedright}{
+    \raggedright
+    \exhyphenpenalty 0 
+}
+
+\def\boxtitle#1{
+    \hspace*{-1.4cm}
+    \colorbox{mainc}{
+        \textcolor{white}{
+            \fontsize{9}{9}\superior\bfseries\selectfont\parbox{\linewidth+1.27cm-2\fboxsep}{
+                \raggedleft \vspace{2pt}\hspace{-3pt}#1\vspace{2pt}
+            }
+        }
+    }
+}
+
+\long\def\maketitle#1#2#3#4#5#6#7#8{
+    \noindent
+    \begin{minipage}[t]{0.2\textwidth}
+        \sffamily
+
+        \begin{flushright}
+            \textsuperscript{Enviado por: #3}\\
+            \textsuperscript{Aceptado por: Editor Use}\\
+            \textsuperscript{Publicado por: Editor Use}\\
+        \end{flushright}
+        \smallskip
+    
+        \setlength{\fboxsep}{1pt}
+        \boxtitle{\vphantom{y} #4} % Tipo de artículo
+    
+        \smallskip 
+        {\raggedright \vbox to0.84in {\fontsize{8}{9.6}\creato\selectfont#5}} % Afiliación
+        
+        \boxtitle{Palabras clave}
+        
+        \smallskip 
+        {\raggedright \vbox to0.49in {\fontsize{7}{7}\sffamily#6}} % Keywords
+    
+        \boxtitle{Correo electrónico}
+        
+        \smallskip
+        {\raggedleft \vbox to0.5in {\fontsize{7}{7}\creato\selectfont\href{mailto:#7}{#7}}}
+        {\raggedright \vbox to0.5in {\fontsize{7}{7}\sffamily Template developed by \href{https://github.com/VincentGamez33}{\textbf{Vicente C. Gámez}} \\ \copyright\,The Author. This template is published under a CC-BY license: \href{https://creativecommons.org/licenses/by/4.0/}{https://creativecommons.org/licenses/by/4.0/}}} % DOI y copyright
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.75\textwidth} % Minipágina para título a la derecha
+        {\YZraggedright
+            {\fontsize{11}{13.2}\creato\selectfont #1} % Autores
+            \vspace{-\smallskipamount}
+            
+            {\fontsize{24}{27.8}\creato\bfseries\selectfont #2 \strut} % Título del artículo
+            % \vspace*{1cm}
+        
+            \section*{Resumen}
+        }
+        {\justifying
+            \setlength{\parskip}{9pt}   
+            #8 \bigskip % Resumen
+        }
+    \end{minipage}
+    \myline \bigskip
+}

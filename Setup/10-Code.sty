@@ -1,0 +1,116 @@
+\usepackage{minted}
+\renewcommand\listingscaption{programa}
+
+\setminted{
+    % style=default,
+    style=vs,
+    % style=friendly,
+    % style=colorful,
+    % style=autumn,
+    % style=murphy,
+    % style=manni,
+    % style=monokai,
+    % style=perldoc,
+    % style=pastie,
+    % style=borland,
+    % style=trac,
+    % style=native,
+    % style=fruity,
+    % style=bw,
+    % style=vim,
+    % style=tango,
+    frame=none,
+        baselinestretch=1.1,
+	fontsize=\king\selectfont,
+	highlightcolor=mainc!25,
+	linenos,
+	breakanywhere=true,
+	breakautoindent=true,
+	breaklines=true,
+	tabsize=4,
+	xleftmargin=3.2em, % 3.5 para código más grande
+        numbersep=0.6em,
+	autogobble=true,
+	obeytabs=true,
+	python3=true,
+	% texcomments=true,
+	% framesep=2mm,
+    breaksymbol=\color{page!60!text}\tiny\ensuremath{\hookrightarrow},
+	breakanywheresymbolpre=\,\footnotesize\ensuremath{_{\color{page!60!text}\rfloor}},
+	breakbeforesymbolpre=\,\footnotesize\ensuremath{_{\color{page!60!text}\rfloor}},
+	breakaftersymbolpre=\,\footnotesize\ensuremath{_{\color{page!60!text}\rfloor}},
+	breakbefore=\\\.+,
+	breakafter=\, no0l ola 9 lo lo
+}
+
+\BeforeBeginEnvironment{minted}{
+    \begin{tcolorbox}[
+	    enhanced,
+	    overlay={\fill[page!90!text] (frame.south west) rectangle ([xshift=2.7em]frame.north west);}, % 2.8 para código más grande
+	    colback=page!95!text,
+	    colframe=page!95!text,
+	    breakable,
+	    arc=0pt,
+        outer arc=0pt,
+        sharp corners,
+	    boxsep=0pt,
+        left=0pt,
+        right=0pt,
+        top=0pt,
+        bottom=0pt
+    ]
+}
+\AfterEndEnvironment{minted}{\end{tcolorbox}}
+
+
+\renewcommand\theFancyVerbLine{
+    \verdana\selectfont\color{text!60!page}\arabic{FancyVerbLine}
+}
+
+\let\mintinlineold\mintinline
+\setmintedinline{breaklines,bgcolor={}}
+%
+\DeclareTotalTCBox{\mintinline}{v v}{
+    nobeforeafter,
+    tcbox raise base,
+	enhanced,
+    frame hidden,
+    arc=3pt,
+	boxsep=0pt,
+    left=3pt,
+    right=3pt,
+    top=2pt,
+    bottom=2pt,
+	colback=page!94!text,
+	outer arc=0pt,
+	leftrule=0pt,
+    rightrule=0pt,
+    toprule=0pt,
+    bottomrule=0pt
+}{\mintinlineold{#1}{#2}}
+
+
+\makeatletter
+
+\let\oldinputminted\inputminted
+\renewcommand{\inputminted}[3][]{%
+    \begin{tcolorbox}[
+        enhanced,
+        overlay={\fill[page!90!text] (frame.south west) rectangle ([xshift=2.7em]frame.north west);},
+        colback=page!95!text,
+        colframe=page!95!text,
+        breakable,
+        arc=0pt,
+        outer arc=0pt,
+        sharp corners,
+        boxsep=0pt,
+        left=0pt,
+        right=0pt,
+        top=0pt,
+        bottom=0pt
+    ]
+    \oldinputminted[#1]{#2}{#3}%
+    \end{tcolorbox}
+}
+
+\makeatother

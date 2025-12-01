@@ -1,0 +1,99 @@
+% Ahhhhhhhhhhhhhhhhhh
+\section{Introducción}
+Este documento sirve como manual de usuario y archivo de demostración para la plantilla de \LaTeX. Su propósito es doble: por un lado, establecer las directrices de estilo y formato que deben seguir los autores; y por otro, ofrecer ejemplos de código listos para ser utilizados que ilustran la implementación de los elementos más comunes, como figuras, tablas y referencias bibliográficas. A continuación, se detallan los aspectos clave de la plantilla.
+
+\subsection{Exigencia y Justificación}
+Se asume que los autores que envían trabajos sobre \LaTeX\ están familiarizados con su uso. Por lo tanto, las explicaciones proporcionadas aquí son básicas y abarcan principalmente situaciones en las que he preferido un cierto estilo o se ofrecen por conveniencia.
+
+\subsection{Otra Subsección Sin Numerar}
+\lipsum[1-2]\footnote{Usando \texttt{\textbackslash{}footnote\{texto de la nota al pie\}} podemos crear notas al pie}
+
+\section{Plantilla}
+El nombre del presente trabajo es \textbf{Disquisitio Elementalis}, desarrollado por \href{https://github.com/VincentGamez33}{\textbf{Vicente C. Gámez}} y fue basado en la plantilla original disponible en \href{https://www.overleaf.com/latex/templates/template-for-submission-to-mcgill-science-undergraduate-research-journal-msurj/fcsmmrhbsbhq}{\oldtextbf{\Lato\selectfont\color{overleaf}Overleaf}}.
+
+\subsection{Citas en el Texto}
+\textbf{Disquisitio Elementalis} utiliza el estilo de referencia Nature. Para citar las fuentes en el texto, encierre el nombre de la referencia en el archivo \texttt{references.bib} como argumento de \texttt{\textbackslash{}supercite\{\}}\supercite{referenceName}. Las únicas ocasiones en las que una referencia no debe citarse como superíndice son cuando la referencia se menciona directamente en el texto (por ejemplo, esto se demuestra en ref. \cite{anotherReference}), o cuando la cita sigue directamente a un número: por ejemplo, esta técnica data de 1983 (ref. \cite{yetAnotherReference}). En estos casos, use \texttt{\textbackslash{}cite\{\}}. Los títulos de revistas deben usar abreviaturas ISO 4 siempre que sea posible, a menos que existan otras abreviaturas comúnmente usadas, y todas las referencias de artículos de revista deben incluir un enlace DOI completo\supercite{many_authors}. El archivo \texttt{.bib} de esta plantilla contiene ejemplos de referencias con los datos requeridos. Antes de enviar, por favor revise las Instrucciones para Autores que se encuentran en nuestro sitio web\supercite{instructions}.
+
+\subsection{Teoremas}
+La clase \textbf{Disquisitio Elementalis} usada para crear este documento contiene actualmente entornos para teoremas (usando \texttt{\textbackslash{}new\-tcb\-theo\-rem\{\}}) para ``Teoremas'', ``Definiciones'', ``Proposiciones'', ``Lemas'', ``Corolarios'' y ``Ejemplos'' basados en usos previos. Sus nombres para instanciar cada entorno están en \texttt{Setup/08-Math.sty}. Por favor, siéntase libre de crear las categorías que necesite para referirse claramente a materiales de una forma sencilla que no interfiera con el flujo del texto. Además, trate de etiquetar cada ecuación y teorema con \texttt{\textbackslash{}label\{...\}}, especialmente si luego va a referenciarlos en el texto.
+\begin{example}{}{theorem-text}
+    Usando estos entornos de teoremas, su texto se mostrará así.
+\end{example}
+\begin{proposition}{}{Euler}
+    $e^{i\theta}=\cos{\theta}+i\sen{\theta}, \qquad \forall \, \theta \in \RR.$
+    \begin{demostracion}
+        Se sigue de la definición de la serie de Taylor de la exponencial donde el radio de convergencia es infinito.
+        \[ f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!} (x-a)^n. \QEDblack\]
+    \end{demostracion}
+    \begin{demostracion}
+        Se sigue de la definición de la serie de Taylor de la exponencial donde el radio de convergencia es infinito.
+    \end{demostracion}
+\end{proposition}
+De la Proposición \ref{prop:Euler} se sigue que
+\begin{equation}\label{eq:2.1}
+    e^{i\pi} + 1 = 0.
+\end{equation}
+Usando ``\texttt{\textbackslash{}eqref\{eq:2.1\}},'' nos referimos a la Ecuación \eqref{eq:2.1}. Note la mayúscula en “Ecuación.”
+\subsection{Figuras}
+La presentación de las figuras es un elemento clave en cualquier documento. En esta plantilla, el formato de los pies de foto, generados con el comando \texttt{\textbackslash{}caption\{...\}}, ha sido personalizado para ajustarse a las normas editoriales en cuanto a tipografía, numeración y espaciado.
+
+\begin{minted}[escapeinside=]{C}
+if calificación del estudiante es mayor o igual que 60
+    Imprime "Aprobado"
+else
+    Imprime "Reprobado"
+\end{minted}
+
+Es fundamental que cada figura incluya una etiqueta única mediante \texttt{\textbackslash{}label\{...\}} para poder hacer referencia a ella de forma cruzada en el texto (por ejemplo, ``como se observa en la Figura~\ref{fig:example-figure}").
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{Images/Editorial_TeXPress.pdf} \caption{Imagen ilustrativa.}
+    \label{fig:example-figure}
+\end{figure}
+
+\subsection{Tablas}
+Al igual que con las figuras, la correcta presentación de las tablas es crucial para la claridad del documento. Esta plantilla personaliza el formato de los pies de tabla mediante el comando \texttt{\textbackslash{}caption\{...\}} para mantener la coherencia con el resto de los elementos.
+\begin{table}[H]
+    \centering
+    \begin{NiceTabular}{lcc}[
+        hvlines-except-borders,
+        cell-space-limits=4pt,
+        rules={color=white, width=1.5pt}
+    ]
+        \CodeBefore
+            \rowcolor{mainc!80}{1}
+            \rowcolors{2}{mainc!25}{mainc!10}
+        \Body
+            \RowStyle[color=white]{\ipn\selectfont\bfseries} % Estilo del encabezado
+            Característica & Plan Básico & Plan Premium \\
+            Almacenamiento en la nube & 10 GB & 100 GB \\
+            Soporte técnico 24/7 & \times & \checkmark \\
+            Reportes avanzados & \times & \checkmark \\
+            Usuarios por cuenta & 1 & 5 \\
+    \end{NiceTabular}
+    \caption{Una tabla `simple'}
+    \label{table:example-table1}
+\end{table}
+Usando ``Tabla \texttt{\textbackslash{}ref\{table:example-table1\}},'' nos referimos a la Tabla \ref{table:example-table1}.
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[H]
+    \centering{}
+    \caption{Una tabla más complicada}
+    \begin{threeparttable}
+    \begin{tabular}{|p{15mm}|p{20mm}|c|}
+    \hline
+    \centering\cellcolor{mainc!30}\oldtextbf{Categoría} & \centering\cellcolor{mainc!30}\oldtextbf{Subcategoría} & 
+    \cellcolor{mainc!30}\oldtextbf{Fruta} \centering \tabularnewline \hline
+    \centering A & \centering A1 & Manzana\raggedright \tabularnewline \cline{3-3} 
+    & \multicolumn{1}{p{20mm}|}{} & Pera\raggedright \tabularnewline \cline{3-3} 
+     & \multicolumn{1}{p{20mm}|}{} & Durazno\raggedright \tabularnewline \hline
+    \centering B & \multicolumn{1}{p{20mm}|}{\centering B1} & Plátano\raggedright \tabularnewline \cline{2-3} 
+     & \multicolumn{1}{p{20mm}|}{\centering B2} & Naranja\raggedright \tabularnewline \cline{3-3} 
+     & \multicolumn{1}{p{15mm}|}{} & Toronja\raggedright \tabularnewline \hline
+    \end{tabular}
+    \end{threeparttable}
+    \label{table:example-table2}
+\end{table}
+
+% \newpage
+\printbibliography

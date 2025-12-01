@@ -1,0 +1,47 @@
+\addtocounter{page}{0} % Los editores cambian dependiendo del posicionamiento del artículo (añade números de página)
+\pagestyle{fancy} % Establecer estilo de página
+\fancyhf{} % Limpia encabezado y pie de página
+
+\renewcommand{\headrulewidth}{0pt} % Sin línea en encabezado
+
+\fancyfoot[LO,RE] {
+    \colorbox{mainc}{
+        \textcolor{white}{\fontsize{8}{9.6}\superior\bfseries\selectfont%
+        \parbox{42pt}{\centering Página~\thepage}}
+    }
+}
+
+\fancyfoot[LE]{
+    \textcolor{gray}{\fontsize{8}{9.6}\malgungothic Instituto Politécnico Nacional {\sffamily---} \href{https://www.esfm.ipn.mx}{\textcolor{gray}{www.esfm.ipn.mx}}}\hspace{-0.635cm}%
+}
+
+\fancyfoot[RO]{\hspace{-0.635cm}
+    \textcolor{gray}{\fontsize{8}{9.6}\malgungothic \# Reporte | Métodos Numéricos {\rmfamily II} | Noviembre \the\year}%
+}
+
+
+
+\renewcommand{\thefootnote}{\arabic{footnote}}
+
+\renewcommand{\footnoterule}{%
+    \vspace*{0.5mm}%
+    \noindent
+    \begin{tikzpicture}[remember picture,overlay]
+        \draw[line width=0.175mm,mainc!75] (0,0) -- (0.25\linewidth,0);
+        % \foreach \i in {0,1,2}{
+        %     \fill[mainc] (\i*0.25, 0.07-\i*0.01) -- ++(0.14-0.02*\i,-0.07+0.01*\i) --++(-0.14+0.02*\i,-0.07+0.01*\i) -- cycle;
+        % }
+        \foreach \i in {0, 1, 2} {
+            \fill[mainc] (\i*0.2+0.025, 0) circle (0.05 - \i*0.01);
+        }
+    \end{tikzpicture}%
+    \vspace*{1.35mm}%
+}
+
+\renewcommand\@makefntext[1]{%
+    \noindent
+    \textsuperscript{%
+        \color{mainc}\verdana\bfseries\selectfont\@thefnmark
+    }%
+    \enspace #1
+}

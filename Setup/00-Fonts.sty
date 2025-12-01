@@ -1,0 +1,120 @@
+% --------------------------------------------------------
+% Fuentes
+% --------------------------------------------------------
+\usepackage[T1]{fontenc}       % Codificación de fuente para conjuntos de caracteres extendidos.  
+\usepackage{fvextra}           % Personalización mejorada de entornos verbatim.  
+\usepackage{csquotes}          % Comillas contextuales.
+\usepackage{fontspec}          % Requerido para fuentes personalizadas con XeLaTeX o LuaLaTeX.  
+\usepackage{unicode-math}
+\usepackage[bb=ams]{mathalpha}
+
+\setmainfont{XITS}
+[    Extension = .otf,
+   UprightFont = *-Regular,
+      BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+BoldItalicFont = *-BoldItalic,
+]
+
+\setmathfont{XITSMath-Regular}
+[    Extension = .otf,
+      BoldFont = XITSMath-Bold,
+]
+
+\newfontfamily\altone[Path=Fonts/Altone/, Extension = .ttf,
+   UprightFont = *-Regular,
+      BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+BoldItalicFont = *-BoldItalic]{Altone}
+
+\newfontfamily\cafe[Path=Fonts/Cafe/, Extension = .ttf,
+   UprightFont = *-Regular,
+      BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+BoldItalicFont = *-BoldItalic]{LouisGeorgeCafe}
+
+\newfontfamily\creato[Path=Fonts/Creato/, Extension = .otf,
+   UprightFont = *-Regular,
+      BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+BoldItalicFont = *-BoldItalic]{CreatoDisplay}
+
+\newfontfamily\gravity[Path=Fonts/Gravity/, Extension = .otf,
+   UprightFont = *-Regular,
+      BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+BoldItalicFont = *-BoldItalic]{Gravity}
+
+\newfontfamily\ipn[Path=Fonts/IPN/, Extension = .ttf,
+   UprightFont = *-Regular,
+      BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+BoldItalicFont = *-BoldItalic]{NotoSans}
+
+\newfontfamily\naturalfont[Path=Fonts/Natural/]{NaturalFont.ttf}
+
+\newfontfamily\roboto[Path=Fonts/Roboto/, Extension = .ttf,
+   UprightFont = *-Regular,
+      BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+BoldItalicFont = *-BoldItalic]{Roboto}
+
+\newfontfamily\sft[Path=Fonts/SFT/, Extension = .ttf,
+   UprightFont = *-Regular,
+      BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+BoldItalicFont = *-BoldItalic]{SFTSchriftedSans}
+
+\newfontfamily\superior[Path=Fonts/Superior/, Extension = .otf,
+   UprightFont = *-Regular,
+      BoldFont = *-Bold]{LTSuperior}
+
+\newfontfamily\tnr[Path=Fonts/TNR/, Extension = .ttf,
+   UprightFont = *-Regular,
+      BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+BoldItalicFont = *-BoldItalic]{TimesNewRoman}
+
+\newfontfamily\TrajanProB[Path=Fonts/Trajan/]{TrajanPro-Bold.otf}
+\newfontfamily\TrajanProR[Path=Fonts/Trajan/]{TrajanPro-Regular.ttf}
+
+\newfontfamily\verdana[Path=Fonts/Verdana/, Extension = .ttf,
+   UprightFont = *-Regular,
+      BoldFont = *-Bold,
+    ItalicFont = *-Italic,
+BoldItalicFont = *-BoldItalic]{Verdana}
+
+\newfontfamily\Bahnschrift[Path=Fonts/, Extension = .ttf]{Bahnschrift}
+
+\newfontfamily\malgungothic[Path=Fonts/, Extension = .ttf]{Malgungothic}
+
+\newfontfamily\juk[Path=Fonts/, Extension = .ttf]{JukFont}
+
+\newfontfamily\Lato[
+  Ligatures      = TeX,
+  UprightFont    = *-Regular,
+  ItalicFont     = *-Italic,
+  BoldFont       = *-Bold,
+  BoldItalicFont = *-BoldItalic,
+]{Lato}
+
+\newfontfamily\king[Path=Fonts/King/]{King.ttf}
+
+\AtBeginDocument{%
+  \mathchardef\stdcomma=\mathcode`,
+  \mathcode`,="8000
+}
+\begingroup\lccode`~=`, \lowercase{\endgroup\def~}{\stdcomma\,}
+
+\setmathfont{Latin Modern Math}[range={\sum,\prod,\nabla,\in,\forall}]
+% \setmathfont{TeX Gyre Pagella Math}[range=\mathbb]
+
+
+\let\oldtextbf\textbf
+\renewcommand{\textbf}[1]{\oldtextbf{\textcolor{mainc}{#1}}}
+
+\let\oldLaTeX\LaTeX
+\renewcommand{\LaTeX}{\text{\tnr\selectfont\oldLaTeX}}
+
+\setlist[enumerate]{font=\creato\bfseries\selectfont\color{mainc}}
+\setlist[itemize]{label={$\color{mainc}\bullet$}}
