@@ -71,6 +71,18 @@ Para estimar la velocidad de cambio, utilizamos métodos de diferencias finitas 
 
 Para validar la robustez numérica, definimos métricas de error absoluto, normalizado (para verificar el orden de convergencia) y relativo. La implementación computacional de estos esquemas se encuentra en el \refcode{diff} del \refapx{codes}.
 
+\begin{definition}{Métricas de Error Numérico}{errores}
+    Sean $v_{real} = \fdif{f}{c}$ el valor de referencia (calculado analíticamente o con alta precisión) y $v_{aprox}$ el valor numérico obtenido. Definimos:
+    \begin{enumerate}
+        \item \textbf{Error Absoluto ($e_n$):} La magnitud de la diferencia directa.
+            \[ e_n = \abs{v_{real} - v_{aprox}}. \]
+        \item \textbf{Error Normalizado ($e_{N,h}$):} Medida utilizada para verificar la constante asintótica de convergencia $C$. Dado que utilizamos un método de orden 4, esperamos que:
+            \[ e_{N,h} = \frac{e_n}{h^4} \le C. \]
+        \item \textbf{Error Relativo ($e_{r}$):} Proporción del error respecto a la magnitud de la aproximación, útil para dimensionar el error en función de la escala de los datos (víctimas) \cite{DatosSESNSP2025}.
+            \[ e_{r} = \frac{e_n}{\abs{v_{aprox}}}. \]
+    \end{enumerate}
+\end{definition}
+
 \subsection{Integración Numérica}
 
 La integración numérica permite evaluar el impacto total acumulado sustituyendo $f(x)$ por un polinomio interpolador.
