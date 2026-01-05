@@ -1,10 +1,10 @@
-\renewcommand{\thefootnote}{\arabic{footnote}}
+\setlength{\footnotemargin}{6pt}
 
 \renewcommand{\footnoterule}{%
-    \vspace*{0.5mm}%
+    \vspace*{1mm}%
     \noindent
     \begin{tikzpicture}[remember picture,overlay]
-        \draw[line width=0.25mm,mainc!75] (0,0) -- (0.2\linewidth,0);
+        \draw[line width=0.175mm,mainc!75] (0,0) -- (0.25\textwidth,0);
         % \foreach \i in {0,1,2}{
         %     \fill[mainc] (\i*0.25, 0.07-\i*0.01) -- ++(0.14-0.02*\i,-0.07+0.01*\i) --++(-0.14+0.02*\i,-0.07+0.01*\i) -- cycle;
         % }
@@ -12,13 +12,15 @@
             \fill[mainc] (\i*0.2+0.025, 0) circle (0.05 - \i*0.01);
         }
     \end{tikzpicture}%
-    \vspace*{1.35mm}%
+    \vspace*{1.4mm}%
 }
 
-\renewcommand\@makefntext[1]{%
-    \noindent
-    \textsuperscript{%
-        \color{mainc}\verdana\bfseries\selectfont\@thefnmark
-    }%
-    \enspace #1
-}
+\makeatletter
+% Le decimos a LaTeX: 
+% "Busca dentro de \@makefntext (la versión de hyperref) el comando \@thefnmark 
+% y cámbialo por tu versión con color y fuente".
+\xpatchcmd{\@makefntext}
+    {\@thefnmark} % Lo que buscamos (el número simple)
+    {{\color{mainc}\verdana\selectfont\@thefnmark}} % El reemplazo (el número estilizado)
+    {}{} % Argumentos de éxito/fallo (los dejamos vacíos)
+\makeatother

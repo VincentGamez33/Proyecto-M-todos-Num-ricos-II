@@ -1,32 +1,64 @@
-\section{Justificación Metodológica de la Aproximación Polinómica por Tramos}
+\section{Apéndice: Justificación Metodológica de la Aproximación Polinómica}\label{appendix:A-Runge-phenomenon}
 
-\subsection{Limitaciones de la Interpolación Polinómica de Alto Grado}
+\subsection{Limitaciones de la Interpolación Global (Fenómeno de Runge)}
 
-Para un conjunto de $n+1$ puntos de datos, como la serie de tiempo \texttt{Nacional\_Mensual} ($n=128$), es teóricamente posible construir un único polinomio de grado $n$ que pase exactamente por todos los puntos. Sin embargo, en la práctica, el uso de polinomios de interpolación de grado muy alto presenta serias desventajas numéricas.
+Para un conjunto de $N$ puntos de datos, teóricamente es posible construir un único polinomio de grado $N-1$ que interpole exactamente todos los nodos. Sin embargo, en la práctica, el uso de polinomios de muy alto grado sobre mallas equidistantes presenta serias desventajas numéricas.
 
-El problema fundamental fue ilustrado por Carl Runge en 1901. El \textbf{fenómeno de Runge} demuestra que, para ciertos conjuntos de puntos (especialmente aquellos equiespaciados), el polinomio de interpolación de alto grado puede presentar \textbf{oscilaciones violentas} cerca de los extremos del intervalo. Estas oscilaciones provocan que el error de aproximación, lejos de disminuir al añadir más puntos, diverja drásticamente.
+El problema fundamental fue descrito por Carl Runge en 1901. El \textbf{Fenómeno de Runge} demuestra que, al aumentar el grado del polinomio interpolador, el error de aproximación en los extremos del intervalo no disminuye, sino que diverge drásticamente, generando \textbf{oscilaciones violentas}.
 
-El ejemplo clásico es la función $f(x) = \frac{1}{x}$. Al interpolar esta función con un polinomio de alto grado, el polinomio resultante oscila de manera incontrolada en los extremos, fallando en representar la función real.
+El contraejemplo clásico es la función de Runge:
+\begin{equation}
+    f(x) = \frac{1}{1+25x^2}
+\end{equation}
+Al interpolar esta función suave con un polinomio de alto grado en nodos equiespaciados, el polinomio resultante oscila de manera incontrolada cerca de los bordes del dominio, fallando en representar la función original.
 
-Los datos de este proyecto (víctimas de homicidio) son inherentemente ``ruidosos'' e irregulares. Intentar ajustar un único polinomio de grado 128 a los 129 puntos de la serie \texttt{Nacional\_Mensual} resultaría en un modelo numéricamente inestable y un ejemplo claro del fenómeno de Runge, produciendo un polinomio con oscilaciones extremas y nulo valor predictivo.
+Dado que los datos de incidencia delictiva procesados en este proyecto presentan variabilidad inherente (ruido), intentar ajustar un único polinomio global (p.ej., de grado $n > 100$) resultaría en un modelo numéricamente inestable, con oscilaciones absurdas que carecen de valor predictivo o explicativo.
 
-\subsection{Aproximación Polinómica por Tramos (Piecewise-Polynomial Approximation)}
+\subsection{Estrategia de Aproximación por Tramos}
 
-Para mitigar los problemas de la interpolación de alto grado, la estrategia numéricamente robusta es la \textbf{Aproximación Polinómica por Tramos}.
+Para mitigar este problema, la estrategia numéricamente robusta adoptada en este trabajo es la \textbf{Aproximación Polinómica por Tramos} (\textit{Piecewise-Polynomial Approximation}).
 
-Este método, descrito en textos de análisis numérico como Burden \& Faires (9ª ed., Sección 3.5), consiste en dividir el intervalo completo de datos en una serie de sub-intervalos más pequeños (o ``tramos''). En lugar de un solo polinomio de alto grado, se construye un polinomio de \textbf{grado bajo} (e.g., grado 3, 5, o 9) para cada tramo.
+Este método, fundamentado en textos clásicos de análisis numérico (Burden \& Faires, 9ª ed., Sección 3.5), consiste en dividir el dominio temporal en subintervalos finitos. En lugar de un solo polinomio de alto grado, se construye una familia de polinomios de \textbf{grado bajo} para cada segmento.
 
-Las ventajas de este enfoque son significativas:
+Las ventajas de este enfoque son determinantes:
 \begin{enumerate}
-    \item \textbf{Evita el Fenómeno de Runge:} Al utilizar exclusivamente polinomios de grado bajo, se eliminan las oscilaciones de alto grado.
-    \item \textbf{Adaptabilidad Local:} Cada polinomio se ajusta a la tendencia \textit{local} de los datos en su tramo. Esto es ideal para series de tiempo, permitiendo que el modelo se adapte a picos, valles y cambios de tendencia sin distorsionar la aproximación global.
-    \item \textbf{Estabilidad Numérica:} El cálculo de varios polinomios de grado bajo es computacionalmente más simple y menos susceptible a errores de redondeo que un solo sistema de alto grado.
+    \item \textbf{Eliminación del Fenómeno de Runge:} Al restringir el grado de los polinomios (e.g., cúbicos o de grado 4), se acotan las oscilaciones.
+    \item \textbf{Adaptabilidad Local:} Cada polinomio responde exclusivamente a la tendencia de los datos en su vecindad, permitiendo modelar picos y valles sin distorsionar la aproximación en meses distantes.
+    \item \textbf{Estabilidad Computacional:} Operar con múltiples sistemas pequeños es menos susceptible a errores de redondeo y mal condicionamiento que resolver un sistema lineal gigante de orden $N$.
 \end{enumerate}
 
-\subsection{Aplicación en este Proyecto}
+\subsection{Implementación Computacional}
 
-Este proyecto implementó una \textbf{Aproximación Polinómica por Tramos} (Sección \ref{sec:03-res}). La serie de tiempo \texttt{Nacional\_Mensual} se dividió en tramos consecutivos de 10 puntos, y para cada tramo se construyó un polinomio de interpolación de Lagrange de grado 9.
+Con base en lo anterior, este proyecto implementó dos niveles de aproximación por tramos para contrastar su eficacia:
 
-Este enfoque permite un análisis local preciso (necesario para las derivadas, Sección \ref{sec:04-conclu}) y una integración robusta (Sección \ref{sec:05-dis}), sacrificando la continuidad global de las derivadas (que no es un objetivo de este análisis) en favor de la estabilidad y la precisión local.
+\begin{itemize}
+    \item \textbf{Interpolación de Lagrange por Bloques:} Se dividió la serie en bloques consecutivos de 5 puntos ($k=5$), ajustando polinomios de grado 4 en cada tramo. Esto resolvió el problema de estabilidad global, aunque introdujo puntos de no-derivabilidad ($C^0$) en las uniones.
+    
+    \item \textbf{Splines Cúbicos Naturales:} Como evolución del método anterior, se implementaron trazadores cúbicos (\textit{Cubic Splines}). Estos son polinomios por tramos de grado 3 que imponen condiciones de continuidad no solo en la función, sino en su primera y segunda derivada ($S \in C^2$).
+\end{itemize}
 
-Una evolución de este método son los \textbf{Trazadores Cúbicos (Cubic Splines)}, los cuales son polinomios por tramos de grado 3 que imponen condiciones de continuidad en la primera y segunda derivada ($C^2$), garantizando una curva ``suave'' en los puntos de unión (nodos). Sin embargo, para los fines de este trabajo, la aproximación por tramos de Lagrange es la metodología especificada y aplicada.
+Para los fines analíticos de este trabajo (cálculo de tasas de cambio e impacto acumulado), se seleccionó el modelo de \textbf{Splines Cúbicos} como el estimador óptimo, ya que garantiza la suavidad necesaria para realizar procesos de diferenciación numérica sin el ruido introducido por las discontinuidades de los bloques simples.
+
+\section{Apéndice: Implementación Computacional}\label{appendix:codes}
+
+A continuación se presentan los códigos fuente desarrollados en Python para la implementación de los métodos numéricos descritos en la \refsec{02-pre}.
+
+\subsection{Interpolación}\label{apx:code-interp}
+
+\begin{code}{Implementación de Interpolación de Lagrange}{lagrange}
+    \inputminted[fontsize=\footnotesize, linenos]{python}{02-Interpolacion/interpolacion_lagrange.py}
+\end{code}
+
+\begin{code}{Implementación de Splines Cúbicos Naturales}{spline}
+    \inputminted[fontsize=\footnotesize, linenos]{python}{03-Splines/interpolacion_splines.py}
+\end{code}
+
+\subsection{Cálculo Infinitesimal Numérico}\label{code-calc}
+
+\begin{code}{Implementación de Diferenciación Numérica (Esquema de 5 puntos)}{diff}
+    \inputminted[fontsize=\footnotesize, linenos]{python}{04-Diferenciacion/diferenciacion_numerica.py}
+\end{code}
+
+\begin{code}{Implementación de Integración Numérica (Riemann, Trapecio, Simpson)}{int}
+    \inputminted[fontsize=\footnotesize, linenos]{python}{05-Integracion/integracion_numerica.py}
+\end{code}

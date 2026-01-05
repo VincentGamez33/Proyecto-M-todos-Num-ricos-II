@@ -1,120 +1,223 @@
 % --------------------------------------------------------
-% Fuentes
+% Configuración Robusta de Fuentes
 % --------------------------------------------------------
-\usepackage[T1]{fontenc}       % Codificación de fuente para conjuntos de caracteres extendidos.  
-\usepackage{fvextra}           % Personalización mejorada de entornos verbatim.  
-\usepackage{csquotes}          % Comillas contextuales.
-\usepackage{fontspec}          % Requerido para fuentes personalizadas con XeLaTeX o LuaLaTeX.  
+\usepackage[T1]{fontenc}
+\usepackage{fvextra}
+\usepackage{csquotes}
+\usepackage{fontspec}
 \usepackage{unicode-math}
 \usepackage[bb=ams]{mathalpha}
 
-\setmainfont{XITS}
-[    Extension = .otf,
-   UprightFont = *-Regular,
-      BoldFont = *-Bold,
-    ItalicFont = *-Italic,
-BoldItalicFont = *-BoldItalic,
-]
+% --- COMANDO AUXILIAR DE SEGURIDAD ---
+% Sintaxis: \LoadFontSafe{<Comando>}{<RutaArchivoPrueba>}{<DefiniciónReal>}{<Fallback>}
+\newcommand{\LoadFontSafe}[4]{%
+    \IfFileExists{#2}{%
+        #3% Si el archivo existe, carga la fuente normalmente
+    }{%
+        \ClassWarning{Disquisitio Elementalis}{! FUENTE NO ENCONTRADA: #2. Usando fallback para \string#1.}%
+        \providecommand{#1}{#4}% Si no, define el comando como el estilo fallback
+    }%
+}
 
-\setmathfont{XITSMath-Regular}
-[    Extension = .otf,
-      BoldFont = XITSMath-Bold,
-]
+% --------------------------------------------------------
+% 1. Fuentes Principales (Matemáticas y Texto Base)
+% --------------------------------------------------------
 
-\newfontfamily\altone[Path=Fonts/Altone/, Extension = .ttf,
-   UprightFont = *-Regular,
-      BoldFont = *-Bold,
-    ItalicFont = *-Italic,
-BoldItalicFont = *-BoldItalic]{Altone}
+% Intenta cargar XITS. Si falla, fontspec usará Latin Modern por defecto.
+\IfFontExistsTF{XITS-Regular.otf}{
+    \setmainfont{XITS}[Extension = .otf, 
+           UprightFont = *-Regular,
+              BoldFont = *-Bold,
+            ItalicFont = *-Italic,
+        BoldItalicFont = *-BoldItalic
+    ]
+}{
+    \ClassWarning{Disquisitio Elementalis}{XITS Font no encontrada. Usando Latin Modern.}
+    % No hacemos nada, Latin Modern es el default de LuaLaTeX
+}
 
-\newfontfamily\cafe[Path=Fonts/Cafe/, Extension = .ttf,
-   UprightFont = *-Regular,
-      BoldFont = *-Bold,
-    ItalicFont = *-Italic,
-BoldItalicFont = *-BoldItalic]{LouisGeorgeCafe}
+\IfFontExistsTF{XITSMath-Regular.otf}{
+    \setmathfont{XITSMath-Regular}[Extension = .otf, BoldFont = XITSMath-Bold]
+}{
+    \setmathfont{Latin Modern Math} % Fallback seguro
+}
 
-\newfontfamily\creato[Path=Fonts/Creato/, Extension = .otf,
-   UprightFont = *-Regular,
-      BoldFont = *-Bold,
-    ItalicFont = *-Italic,
-BoldItalicFont = *-BoldItalic]{CreatoDisplay}
+% --------------------------------------------------------
+% 2. Familias de Fuentes Personalizadas
+% --------------------------------------------------------
 
-\newfontfamily\gravity[Path=Fonts/Gravity/, Extension = .otf,
-   UprightFont = *-Regular,
-      BoldFont = *-Bold,
-    ItalicFont = *-Italic,
-BoldItalicFont = *-BoldItalic]{Gravity}
+% --- Creato Display ---
+\LoadFontSafe{\creato}{Fonts/Creato/CreatoDisplay-Regular.otf}{
+    \newfontfamily\creato[Path=Fonts/Creato/, Extension = .otf,
+           UprightFont = *-Regular,
+              BoldFont = *-Bold,
+            ItalicFont = *-Italic,
+        BoldItalicFont = *-BoldItalic]{CreatoDisplay}
+}{\sffamily\bfseries} % Fallback: Sans Serif Negrita (para títulos)
 
-\newfontfamily\ipn[Path=Fonts/IPN/, Extension = .ttf,
-   UprightFont = *-Regular,
-      BoldFont = *-Bold,
-    ItalicFont = *-Italic,
-BoldItalicFont = *-BoldItalic]{NotoSans}
+% --- Roboto ---
+\LoadFontSafe{\roboto}{Fonts/Roboto/Roboto-Regular.ttf}{
+    \newfontfamily\roboto[Path=Fonts/Roboto/, Extension = .ttf,
+           UprightFont = *-Regular,
+              BoldFont = *-Bold,
+            ItalicFont = *-Italic,
+        BoldItalicFont = *-BoldItalic]{Roboto}
+}{\sffamily} % Fallback: Sans Serif normal
 
-\newfontfamily\naturalfont[Path=Fonts/Natural/]{NaturalFont.ttf}
+% --- Lato (Cargada desde el sistema/Overleaf) ---
+\IfFontExistsTF{Lato}{
+    % Si el sistema (Overleaf) tiene Lato instalada:
+    \newfontfamily\Lato[Ligatures = TeX,
+           UprightFont = *-Regular,
+            ItalicFont = *-Italic,
+              BoldFont = *-Bold,
+        BoldItalicFont = *-BoldItalic,
+    ]{Lato}
+}{
+    % Fallback si compilas en una PC sin Lato instalado:
+    \ClassWarning{Disquisitio Elementalis}{Fuente del sistema 'Lato' no encontrada. Usando Sans Serif Italic.}
+    \providecommand{\Lato}{\sffamily\itshape}
+}
 
-\newfontfamily\roboto[Path=Fonts/Roboto/, Extension = .ttf,
-   UprightFont = *-Regular,
-      BoldFont = *-Bold,
-    ItalicFont = *-Italic,
-BoldItalicFont = *-BoldItalic]{Roboto}
+% --- IPN Font (NotoSans) ---
+\LoadFontSafe{\ipn}{Fonts/IPN/NotoSans-Regular.ttf}{
+    \newfontfamily\ipn[Path=Fonts/IPN/, Extension = .ttf,
+           UprightFont = *-Regular,
+              BoldFont = *-Bold,
+            ItalicFont = *-Italic,
+        BoldItalicFont = *-BoldItalic]{NotoSans}
+}{\sffamily}
 
-\newfontfamily\sft[Path=Fonts/SFT/, Extension = .ttf,
-   UprightFont = *-Regular,
-      BoldFont = *-Bold,
-    ItalicFont = *-Italic,
-BoldItalicFont = *-BoldItalic]{SFTSchriftedSans}
+% --- Times New Roman (TNR) ---
+\LoadFontSafe{\tnr}{Fonts/TNR/TimesNewRoman-Regular.ttf}{
+    \newfontfamily\tnr[Path=Fonts/TNR/, Extension = .ttf,
+           UprightFont = *-Regular,
+              BoldFont = *-Bold,
+            ItalicFont = *-Italic,
+        BoldItalicFont = *-BoldItalic]{TimesNewRoman}
+}{\rmfamily} % Fallback: Serif
 
-\newfontfamily\superior[Path=Fonts/Superior/, Extension = .otf,
-   UprightFont = *-Regular,
-      BoldFont = *-Bold]{LTSuperior}
+% --- Altone ---
+\LoadFontSafe{\altone}{Fonts/Altone/Altone-Regular.ttf}{
+    \newfontfamily\altone[Path=Fonts/Altone/, Extension = .ttf,
+           UprightFont = *-Regular,
+              BoldFont = *-Bold,
+            ItalicFont = *-Italic,
+        BoldItalicFont = *-BoldItalic]{Altone}
+}{\sffamily}
 
-\newfontfamily\tnr[Path=Fonts/TNR/, Extension = .ttf,
-   UprightFont = *-Regular,
-      BoldFont = *-Bold,
-    ItalicFont = *-Italic,
-BoldItalicFont = *-BoldItalic]{TimesNewRoman}
+% --- Louis George Cafe ---
+\LoadFontSafe{\cafe}{Fonts/Cafe/LouisGeorgeCafe-Regular.ttf}{
+    \newfontfamily\cafe[Path=Fonts/Cafe/, Extension = .ttf,
+           UprightFont = *-Regular,
+              BoldFont = *-Bold,
+            ItalicFont = *-Italic,
+        BoldItalicFont = *-BoldItalic]{LouisGeorgeCafe}
+}{\sffamily}
 
-\newfontfamily\TrajanProB[Path=Fonts/Trajan/]{TrajanPro-Bold.otf}
-\newfontfamily\TrajanProR[Path=Fonts/Trajan/]{TrajanPro-Regular.ttf}
+% --- Gravity ---
+\LoadFontSafe{\gravity}{Fonts/Gravity/Gravity-Regular.otf}{
+    \newfontfamily\gravity[Path=Fonts/Gravity/, Extension = .otf,
+           UprightFont = *-Regular,
+              BoldFont = *-Bold,
+            ItalicFont = *-Italic,
+        BoldItalicFont = *-BoldItalic]{Gravity}
+}{\sffamily}
 
-\newfontfamily\verdana[Path=Fonts/Verdana/, Extension = .ttf,
-   UprightFont = *-Regular,
-      BoldFont = *-Bold,
-    ItalicFont = *-Italic,
-BoldItalicFont = *-BoldItalic]{Verdana}
+% --- Natural Font ---
+\LoadFontSafe{\naturalfont}{Fonts/Natural/NaturalFont.ttf}{
+    \newfontfamily\naturalfont[Path=Fonts/Natural/]{NaturalFont.ttf}
+}{\sffamily}
 
-\newfontfamily\Bahnschrift[Path=Fonts/, Extension = .ttf]{Bahnschrift}
+% --- SFT Schrifted Sans ---
+\LoadFontSafe{\sft}{Fonts/SFT/SFTSchriftedSans-Regular.ttf}{
+    \newfontfamily\sft[Path=Fonts/SFT/, Extension = .ttf,
+           UprightFont = *-Regular,
+              BoldFont = *-Bold,
+            ItalicFont = *-Italic,
+        BoldItalicFont = *-BoldItalic]{SFTSchriftedSans}
+}{\sffamily}
 
-\newfontfamily\malgungothic[Path=Fonts/, Extension = .ttf]{Malgungothic}
+% --- LT Superior ---
+\LoadFontSafe{\superior}{Fonts/Superior/LTSuperior-Regular.otf}{
+    \newfontfamily\superior[Path=Fonts/Superior/, Extension = .otf,
+        UprightFont = *-Regular,
+           BoldFont = *-Bold]{LTSuperior}
+}{\rmfamily}
 
-\newfontfamily\juk[Path=Fonts/, Extension = .ttf]{JukFont}
+% --- Trajan Pro (Bold y Regular) ---
+\LoadFontSafe{\TrajanProB}{Fonts/Trajan/TrajanPro-Bold.otf}{
+    \newfontfamily\TrajanProB[Path=Fonts/Trajan/]{TrajanPro-Bold.otf}
+}{\rmfamily\bfseries\scshape} % Fallback: Serif, Bold, Small Caps
 
-\newfontfamily\Lato[
-  Ligatures      = TeX,
-  UprightFont    = *-Regular,
-  ItalicFont     = *-Italic,
-  BoldFont       = *-Bold,
-  BoldItalicFont = *-BoldItalic,
-]{Lato}
+\LoadFontSafe{\TrajanProR}{Fonts/Trajan/TrajanPro-Regular.ttf}{
+    \newfontfamily\TrajanProR[Path=Fonts/Trajan/]{TrajanPro-Regular.ttf}
+}{\rmfamily\scshape}
 
-\newfontfamily\king[Path=Fonts/King/]{King.ttf}
+% --- Verdana ---
+\LoadFontSafe{\verdana}{Fonts/Verdana/Verdana-Regular.ttf}{
+    \newfontfamily\verdana[Path=Fonts/Verdana/, Extension = .ttf,
+           UprightFont = *-Regular,
+              BoldFont = *-Bold,
+            ItalicFont = *-Italic,
+        BoldItalicFont = *-BoldItalic]{Verdana}
+}{\sffamily}
+
+% --- Fuentes Misceláneas (Sin subcarpetas claras en tu código original) ---
+
+\LoadFontSafe{\Bahnschrift}{Fonts/Bahnschrift.ttf}{
+    \newfontfamily\Bahnschrift[Path=Fonts/, Extension = .ttf]{Bahnschrift}
+}{\sffamily\bfseries}
+
+\LoadFontSafe{\malgungothic}{Fonts/Malgungothic.ttf}{
+    \newfontfamily\malgungothic[Path=Fonts/, Extension = .ttf]{Malgungothic}
+}{\sffamily}
+
+\LoadFontSafe{\juk}{Fonts/JukFont.ttf}{
+    \newfontfamily\juk[Path=Fonts/, Extension = .ttf]{JukFont}
+}{\sffamily}
+
+\LoadFontSafe{\king}{Fonts/King/King.ttf}{
+    \newfontfamily\king[Path=Fonts/King/]{King.ttf}
+}{\rmfamily}
+
+
+% --------------------------------------------------------
+% Ajustes Finales y Comandos
+% --------------------------------------------------------
 
 \AtBeginDocument{%
-  \mathchardef\stdcomma=\mathcode`,
-  \mathcode`,="8000
+    \mathchardef\stdcomma=\mathcode`,
+    \mathcode`,="8000
 }
 \begingroup\lccode`~=`, \lowercase{\endgroup\def~}{\stdcomma\,}
 
-\setmathfont{Latin Modern Math}[range={\sum,\prod,\nabla,\in,\forall}]
-% \setmathfont{TeX Gyre Pagella Math}[range=\mathbb]
+% Ajuste de rangos para Math (sumatorias, etc.)
+\setmathfont{Latin Modern Math}[range={\sum,\prod,\nabla,\in,\forall,\setminus}]
 
+% Comandos de estilo
+\newcommand{\itbf}[1]{\textit{\bfseries#1}}
 
 \let\oldtextbf\textbf
 \renewcommand{\textbf}[1]{\oldtextbf{\textcolor{mainc}{#1}}}
 
+% Logos y Nombres (Usando el fallback seguro definido arriba)
 \let\oldLaTeX\LaTeX
 \renewcommand{\LaTeX}{\text{\tnr\selectfont\oldLaTeX}}
 
-\setlist[enumerate]{font=\creato\bfseries\selectfont\color{mainc}}
-\setlist[itemize]{label={$\color{mainc}\bullet$}}
+\newcommand{\LaTeXNew}{\text{\tnr\selectfont\LaTeX}}
+\newcommand{\TikZ}{\text{\tnr\selectfont Ti\emph{k}Z}}
+\newcommand{\TeXNew}{\text{\tnr\selectfont\TeX}}
+\newcommand{\LaTeXeNew}{\text{\tnr\selectfont\LaTeXe}}
+\newcommand{\pdfLaTeX}{\text{\tnr\selectfont pdf\LaTeX}}
+\newcommand{\XeLaTeX}{\text{\tnr\selectfont Xe\LaTeX}}
+\newcommand{\LuaLaTeX}{\text{\tnr\selectfont Lua\LaTeX}}
+
+\newcommand{\tnrfont}[1]{{\tnr\selectfont#1}}
+
+% Configuración de listas (bullets y colores)
+\setlist[itemize,1]{label=\textcolor{mainc}{\textbullet},itemsep=0.1em,topsep=0.1em}
+\setlist[itemize,2]{label=\textcolor{mainc}{\small\faAngleRight},itemsep=0.1em,topsep=0.1em}
+\setlist[itemize,3]{label=\textcolor{mainc}{$\cdot$},itemsep=0.1em,topsep=0.1em}
+\setlist[enumerate]{font=\normalfont\bfseries\color{mainc},itemsep=0.1em,topsep=0.1em}
+\setlist[description]{font=\normalfont\bfseries\color{mainc},itemsep=0.1em,topsep=0.1em}

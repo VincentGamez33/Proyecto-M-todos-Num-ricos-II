@@ -1,6 +1,9 @@
-\section{Introducción}\label{sec:01-intro}
-\lipsum[1-6]
+\section{Introducción}\label{section:01-intro}
 
-\begin{solucion}
-    \[ e^{i\theta} \QEDwhite \]
-\end{solucion}
+En numerosos problemas aplicados se dispone únicamente de información en forma de datos discretos, ya sea proveniente de mediciones experimentales, registros estadísticos o simulaciones computacionales. El análisis de este tipo de información requiere el uso de métodos numéricos que permitan aproximar funciones continuas, así como calcular derivadas e integrales de manera confiable a partir de un conjunto finito de puntos.
+
+En este contexto, la interpolación constituye una herramienta fundamental. Sin embargo, la interpolación polinómica global puede presentar serias dificultades numéricas, especialmente cuando se emplean polinomios de alto grado o cuando los datos no están uniformemente distribuidos. Estas dificultades se manifiestan en fenómenos de inestabilidad y oscilaciones no deseadas (fenómeno de Runge), lo que limita su utilidad práctica en el análisis de datos reales con alta variabilidad.
+
+Como alternativa, los splines cúbicos ofrecen una aproximación por tramos que garantiza suavidad y continuidad en las derivadas, al mismo tiempo que mejora la estabilidad numérica del interpolante. Este tipo de interpolación resulta particularmente adecuado cuando se desea construir un modelo continuo que sirva de base para la aplicación de otros métodos numéricos, como la diferenciación para estimar tasas de cambio locales y la integración para calcular acumulados.
+
+El objetivo de este proyecto es analizar y comparar estos métodos desde un punto de vista tanto teórico como computacional, aplicándolos al estudio de la \textbf{tasa de homicidios dolosos en México} durante el periodo 2015--2025. Para ello, se utilizan los registros oficiales del Secretariado Ejecutivo del Sistema Nacional de Seguridad Pública \cite{DatosSESNSP2025}. Se contrastará el comportamiento de la interpolación polinómica global frente a los splines cúbicos naturales, evaluando posteriormente el desempeño de la diferenciación numérica para identificar puntos críticos de violencia y de las reglas de cuadratura para cuantificar el impacto social acumulado. A través del análisis del error, se busca identificar las ventajas de elegir métodos numéricamente estables para el tratamiento de series de tiempo sociológicas desde una perspectiva de análisis numérico.

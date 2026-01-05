@@ -1,33 +1,33 @@
 \documentclass{Disquisitio_Elementalis_Articles}
-% \usepackage{graphicx} % Required for inserting images
 
-\title{Disquisitio Elementalis -- Template for Articles v2}
-\author{Vicente Gámez}
+\title{Análisis de la tasa de homicidios dolosos en México utilizando Interpolación de Lagrange, Interpolación por Splines y Diferenciación e Integración Numérica}
+\author{Vicente C. Gámez}
 \date{October 2025}
 
 \usepackage{lipsum}
 
 \begin{document}
 
-% \pagestyle{fancy}
-
 \maketitle
-    {Vicente Chavarría Gámez\textsuperscript{1}}
-    {Análisis de la tasa de homicidios dolosos en México utilizando Interpolación de Lagrange y Diferenciación e Integración Numérica\strut\\}
-    {Fecha de envío}
-    {Tipo de artículo}
-    {\textsuperscript{1}\,Departamento de Matemáticas, Escuela Superior de Física y Matemáticas, Instituto Politécnico Nacional, Ciudad de México, México\strut\\
-    }
-    {Homicidio doloso, Métodos Numéricos, Series de Tiempo, Interpolación de Lagrange, Predicción (Forecasting)}
-    {vchavarriag1700@alumno.ipn.mx}
-    {\lipsum[1-2]}
+{Vicente Chavarría Gámez\textsuperscript{1}}
+{Análisis de la tasa de homicidios dolosos en México utilizando Interpolación de Lagrange, Interpolación por Splines y Diferenciación e Integración Numérica\strut\\}
+{5 de enero de 2026}
+{Artículo de Investigación}
+{\textsuperscript{1}\,Departamento de Matemáticas, Escuela Superior de Física y Matemáticas, Instituto Politécnico Nacional, Ciudad de México, México\strut\\
+}
+{Homicidio doloso, Métodos Numéricos, Series de Tiempo, Interpolación de Lagrange, Predicción (Forecasting)}
+{vchavarriag1700@alumno.ipn.mx}
+{%
+    Este proyecto aborda el análisis numérico de una serie de datos discretos mediante técnicas de interpolación, diferenciación e integración numérica. Inicialmente se estudia la interpolación polinómica global, analizando su comportamiento y limitaciones, en particular la inestabilidad asociada al fenómeno de Runge. Como alternativa, se introduce el uso de splines cúbicos naturales, los cuales permiten construir un modelo continuo con mayor estabilidad y suavidad.
+    
+    A partir de dicho modelo se aplican métodos de diferenciación numérica de orden alto y reglas de cuadratura compuesta para aproximar derivadas e integrales definidas. Se presenta tanto el fundamento teórico de los métodos empleados como su implementación computacional, y se comparan los resultados obtenidos con las predicciones teóricas en términos de orden de convergencia y estabilidad. Los resultados muestran que el uso de splines cúbicos proporciona una base numéricamente robusta para el análisis de datos discretos y mejora significativamente el desempeño de los métodos de diferenciación e integración numérica.
+}
 
-% \input{TeX/00-Piloto}
 \input{TeX/01-Introduction}
 \input{TeX/02-Preliminaries}
 \input{TeX/03-Results}
-\input{TeX/04-Conclusions}
-\input{TeX/05-Discussion}
+% \input{TeX/04-Discussion}
+\input{TeX/05-Conclusions}
 \input{TeX/06-Acknowledgments}
 \input{TeX/07-Bibliographic_References}
 

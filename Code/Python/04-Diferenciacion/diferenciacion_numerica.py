@@ -25,3 +25,26 @@ def forward_der_5steps(f,h,a):
     numerador = -25*f(a) + 48*f(a+h) - 36*f(a+(2*h)) + 16*f(a+(3*h)) - 3*f(a+(4*h))
     denominador = 12 * h
     return numerador/denominador
+
+# ========================================================
+# Definición de los errores
+# ========================================================
+def calcular_errores(valor_real, valor_aprox, h, orden_metodo=4):
+    # Error Absoluto (en)
+    e_n = abs(valor_real - valor_aprox)
+    
+    # Error Normalizado (e_N,h = en / h^k)
+    # Buscamos que este valor tienda a una constante C
+    if h > 0:
+        e_norm = e_n / (h ** orden_metodo)
+    else:
+        e_norm = 0.0
+        
+    # Error Relativo (er,n = en / |aprox|)
+    # Nota: La imagen indica dividir por el valor APROXIMADO (app)
+    if abs(valor_aprox) > 1e-12:
+        e_rel = e_n / abs(valor_aprox)
+    else:
+        e_rel = 0.0
+        
+    return e_n, e_norm, e_rel

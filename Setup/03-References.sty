@@ -1,30 +1,332 @@
+% % ==============================================================================
+% % Paquete: Setup/03-References.sty
+% % Autor: Vicente C Gámez
+% % Fecha: 2025/12/13
+% % Clase: Disquisitio Elementalis
+% % Descripción:
+% %   Configuración completa de referencias. Define el comportamiento de hyperref,
+% %   los drivers de biblatex personalizados (numérico sin corchetes) y las macros
+% %   inteligentes expl3 para referencias cruzadas con gestión de singular/plural.
+% %
+% % DEPENDENCIAS: hyperref, biblatex, csquotes, expl3
+% % ==============================================================================
+% \NeedsTeXFormat{LaTeX2e}
+% \ProvidesPackage{Setup/03-References}[2025/12/11 Configuración de Bibliografía y Referencias]
+
+% % =====================================================
+% % 1. Configuración de Hyperref (Enlaces)
+% % =====================================================
+% % Establece el estilo URL como romana normal (no typewriter), más limpio.
+% \urlstyle{rm}
+
+% \hypersetup{
+%     % Opciones de borde (necesarias para desactivar el marco de color si 'colorlinks=false')
+%     % Aquí se usa para definir un borde invisible (0 1 0).
+%     pdfborder={0 1 0}, 
+%     pdfcreator=LuaLaTeX,
+%     unicode=true, % Compatibilidad con caracteres Unicode (crucial para LuaLaTeX)
+%     % Metadatos del PDF
+%     pdftitle={Disquisitio Elementalis},
+%     pdfauthor={Vicente C. Gámez},
+%     pdfsubject={Plantilla para plantillas de libros.},
+%     pdfkeywords={Books, LaTeX, Advanced LaTeX, Class, Math, Template},
+%     % Control de enlaces
+%     linktoc=all,      % Aplica el enlace a todo el bloque ToC (título y página)
+%     % linktocpage=true, % Solo el número de página en ToC será un enlace (no el texto del título)
+%     colorlinks=true,  % Usar color en lugar de marcos
+%     linkcolor=black,  % Enlaces internos (secciones, figuras)
+%     citecolor=black,  % Citas
+%     urlcolor=black,   % URLs
+% }
+
+% % Hook para asegurar que el color de los enlaces sea negro (ajuste defensivo).
+% % \makeatletter
+% % \AtBeginDocument{
+% %     % Redefinimos los comandos de color de hyperref al abrir/cerrar un enlace
+% %     \def\Hy@colorlink#1{\begingroup\color{black}\let\@currentcolor\@empty}
+% %     \def\Hy@endcolorlink{\endgroup}
+% % }
+% % \makeatother
+
+% \newcommand{\forcecolor}[2]{%
+%     \hypersetup{linkcolor=#1,urlcolor=#1}% Configura hyperref localmente
+%     \color{#1}% Configura el texto localmente
+%     #2% Imprime el contenido
+% }
+
+% % =====================================================
+% % 2. Parche de Identidad para Tcolorbox
+% % =====================================================
+% \ExplSyntaxOn
+% \AtBeginDocument{
+%     % Lista de nombres internos definidos en 10-Math.sty
+%     \clist_map_inline:nn { theorem, axiom, corollary, definition, property, lemma, proposition, example, exercise, note, observation }
+%     {
+%         % Verificamos si el contador interno de tcolorbox existe
+%         \cs_if_exist:cT { c@tcb@cnt@#1 }%
+%         {
+%             % Redefinimos el identificador H (Hyperref) para que sea único.
+%             % Ejemplo: \theHtcb@cnt@theorem será "theorem.1.1" en lugar de solo "1.1"
+%             \cs_set:cpn { theHtcb@cnt@#1 } { #1.\use:c { thetcb@cnt@#1 } }%
+%         }
+%     }
+% }
+% \ExplSyntaxOff
+
+% % =====================================================
+% % 3. Configuración de BibLaTeX (Bibliografía)
+% % =====================================================
+% \RequirePackage{csquotes} % Necesario para comillas inteligentes en BibLaTeX
+
+% %%%%%%%%%%%%%%%%%%%% Comandos para cambiar las referencias %%%%%%%%%%%%
+
+% \renewbibmacro*{name:andothers}{% Usar "et al." cuando hay más de 5 autores
+%     \ifboolexpr
+%     {
+%         test {\ifnumequal{\value{listcount}}{\value{liststop}}}
+%         and
+%         test \ifmorenames
+%     }%
+%     {
+%         \ifnumgreater{\value{liststop}}{1}
+%             {\finalandcomma}
+%             {}%
+%         \andothersdelim
+%         \bibstring{andothers}%
+%     }%
+%     {}%
+% }
+
+% % Crear referencia para sitio web
+% \DeclareFieldFormat[website]{title}{#1}
+% \DeclareFieldFormat[website]{url}{\forcecolor{mainc}{\bfseries\href{#1}{#1}}}
+
+% \DeclareBibliographyDriver{website}{%
+%   \usebibmacro{bibindex}%
+%   \usebibmacro{begentry}%
+%   \printnames{author}%
+%   \setunit{\addperiod\addspace}%
+%   \printfield{title}%
+%   \newunit\newblock
+%   \setunit{\addspace}%
+%   \printtext{\printfield[parens]{year}; }
+%   \printfield{url}
+%   %\printfield{addendum}
+%   \iflistundef{pageref}{}{\usebibmacro{pageref}}\iflistundef{shorthand}{}{\usebibmacro{shorthand}}}
+
+% % Cambios en el estilo de referencia para artículos
+% \DeclareBibliographyDriver{article}{%
+%     \usebibmacro{bibindex}%
+%     \usebibmacro{begentry}%
+%     \printnames{author}%
+%     \setunit{\addspace}%
+%     \printfield{title}%
+%     \newunit\newblock
+%     \printfield{journaltitle}%
+%     \setunit{\addspace}%
+%     \printfield{volume}%
+%     \setunit{\addcomma\addspace}%
+%     \printfield{pages}%
+%     \setunit{\addspace}%
+%     \printfield{note}
+%     \printtext{\printfield[parens]{year}. }
+%     \iffieldundef{doi}
+%         {}
+%         {\href{\thefield{doi}}{\thefield{doi}}}
+%     %\setunit{\addspace}%
+%     %\usebibmacro{finentry}}
+%     \iflistundef{pageref}{}{\usebibmacro{pageref}}\iflistundef{shorthand}{}{\usebibmacro{shorthand}}}
+
+% % Cambios en la colección
+% \DeclareBibliographyDriver{incollection}{%
+%     \usebibmacro{bibindex}%
+%     \usebibmacro{begentry}%
+%     \printnames{author}%
+%     \setunit{\addperiod\addspace}%
+%     \printtext{en \printfield{booktitle}}%
+%     \newunit\newblock
+%     \setunit{\addspace}%
+%     \printtext{(\bibstring{editors} \printnames{editor}) }
+%     \printfield{pages}
+%     \printfield{chapter}
+%     \printtext{(\printlist{publisher}, \printfield{year}).}
+%     \printfield{url}
+%     \printfield{addendum}
+%     \iflistundef{pageref}{}{\usebibmacro{pageref}}\iflistundef{shorthand}{}{\usebibmacro{shorthand}}}
+
+% % Redefinir \cite
+% \DeclareCiteCommand{\cite}
+%   {\usebibmacro{prenote}}
+%   {\mkbibbrackets{\bibhyperref{\printfield{labelnumber}}}}
+%   {\multicitedelim}
+%   {\usebibmacro{postnote}}
+
+% %%%%%%%%%%%%%%%%%%%% Fin de los comandos %%%%%%%%%%%%%%%%%
+
+% \addbibresource{references.bib}
+
+
+% % =====================================================
+% % 4. Sistema de Referencias Cruzadas (Expl3)
+% % =====================================================
+% \newcommand{\refstyle}[1]{\textup{\forcecolor{mainc}{\bfseries#1}}}
+
+% \ExplSyntaxOn
+
+% % --- Enlace nativo ---
+% % Usamos \ref nativo. Gracias al parche de arriba, el enlace interno
+% % ahora es único y correcto.
+% \cs_new:Npn \ref_env_link:nn #1#2 {
+%     \refstyle{\ref{#1:#2}}
+% }
+
+% % --- Mecanismo de listas (Estándar) ---
+% \cs_new_protected:Npn \ref_env_list:nnnn #1#2#3#4
+%     {
+%         \seq_set_split:Nnn \l_tmpa_seq { , } { #4 }
+%         \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 1 }
+%             { #2~\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} } }
+%             {
+%                 \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 2 }
+%                     {
+%                         #3~\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} }~y~%
+%                         \ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {2} }
+%                     }
+%                     {
+%                         #3~\seq_pop_right:NN \l_tmpa_seq \l_tmpb_tl
+%                         \seq_map_indexed_inline:Nn \l_tmpa_seq
+%                             { \ref_env_link:nn {#1} {##2}\int_compare:nNnF {##1} = { \seq_count:N \l_tmpa_seq } {,~} }
+%                         \space y~\ref_env_link:nn {#1} { \l_tmpb_tl }
+%                     }
+%             }
+%     }
+
+% % --- Variante para ecuaciones (Estándar) ---
+% \cs_new_protected:Npn \ref_env_list_paren:nnnn #1#2#3#4
+%     {
+%         \seq_set_split:Nnn \l_tmpa_seq { , } { #4 }
+        
+%         % Definimos una función auxiliar interna para crear el link completo "(#)"
+%         % Usa \hyperref[label]{texto} para forzar el destino.
+%         \cs_set:Npn \__ref_paren_item:n ##1 {
+%              (\hyperref[#1:##1]{\forcecolor{mainc}{\bfseries\ref*{#1:##1}}})
+%         }
+
+%         \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 1 }
+%             % Caso 1: Un solo elemento
+%             { #2~\__ref_paren_item:n { \seq_item:Nn \l_tmpa_seq {1} } }
+%             {
+%                 \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 2 }
+%                     % Caso 2: Dos elementos
+%                     {
+%                         #3~\__ref_paren_item:n { \seq_item:Nn \l_tmpa_seq {1} }~y~%
+%                         \__ref_paren_item:n { \seq_item:Nn \l_tmpa_seq {2} }
+%                     }
+%                     % Caso 3: Lista n elementos
+%                     {
+%                         #3~\seq_pop_right:NN \l_tmpa_seq \l_tmpb_tl
+%                         \seq_map_indexed_inline:Nn \l_tmpa_seq
+%                             { \__ref_paren_item:n { ##2 }\int_compare:nNnF {##1} = { \seq_count:N \l_tmpa_seq } {,~} }
+%                         \space y~\__ref_paren_item:n { \l_tmpb_tl }
+%                     }
+%             }
+%     }
+
+% % --- Comandos públicos (Prefijos coincidentes con 10-Math) ---
+% \NewDocumentCommand{\refthm}{m}{\ref_env_list:nnnn {thm} {Teorema} {Teoremas} {#1}}
+% \NewDocumentCommand{\refaxm}{m}{\ref_env_list:nnnn {axm} {Axioma} {Axiomas} {#1}}
+% \NewDocumentCommand{\refcor}{m}{\ref_env_list:nnnn {cor} {Corolario} {Corolarios} {#1}}
+% \NewDocumentCommand{\refdef}{m}{\ref_env_list:nnnn {def} {Definición} {Definiciones} {#1}}
+% \NewDocumentCommand{\reflem}{m}{\ref_env_list:nnnn {lem} {Lema} {Lemas} {#1}}
+% \NewDocumentCommand{\refprp}{m}{\ref_env_list:nnnn {prop} {Proposición} {Proposiciones} {#1}}
+% \NewDocumentCommand{\refobs}{m}{\ref_env_list:nnnn {obs} {Observación} {Observaciones} {#1}}
+% \NewDocumentCommand{\refexm}{m}{\ref_env_list:nnnn {exm} {Ejemplo} {Ejemplos} {#1}}
+% \NewDocumentCommand{\refexe}{m}{\ref_env_list:nnnn {exe} {Ejercicio} {Ejercicios} {#1}}
+% \NewDocumentCommand{\refnot}{m}{ \ref_env_list:nnnn {not} {Nota} {Notas} {#1} }
+% \NewDocumentCommand{\refeqn}{m}{ \ref_env_list_paren:nnnn {eq} {Ecuación} {Ecuaciones} {#1} }
+% \NewDocumentCommand{\reffig}{m}{\ref_env_list:nnnn {fig} {Figura} {Figuras} {#1}}
+% \NewDocumentCommand{\reftab}{m}{\ref_env_list:nnnn {tab} {Tabla} {Tablas} {#1}}
+% \NewDocumentCommand{\refcode}{m}{\ref_env_list:nnnn {code} {Código} {Códigos} {#1}}
+
+% \ExplSyntaxOff
+
+% \endinput
+
+% ==============================================================================
+% Paquete: Setup/03-References.sty
+% Autor: Vicente C Gámez
+% Fecha: 2025/12/13
+% Clase: Disquisitio Elementalis
+% Descripción:
+%   Configuración completa de referencias. Define el comportamiento de hyperref,
+%   los drivers de biblatex personalizados (numérico sin corchetes) y las macros
+%   inteligentes expl3 para referencias cruzadas con gestión de singular/plural.
+%
+% DEPENDENCIAS: hyperref, biblatex, csquotes, expl3
+% ==============================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{Setup/03-References}[2025/12/11 Configuración de Bibliografía y Referencias]
+
+% =====================================================
+% 1. Configuración de Hyperref (Enlaces)
+% =====================================================
+% Establece el estilo URL como romana normal (no typewriter), más limpio.
 \urlstyle{rm}
+
 \hypersetup{
-	pdfborder={0 1 0},
-	pdfcreator=LuaLaTeX,
-        unicode=true,
-    pdftitle={Análisis de la tasa de homicidios dolosos en México utilizando Interpolación de Lagrange y Diferenciación e Integración Numérica},
-	pdfauthor={Vicente Chavarría Gámez},
-    pdfsubject={Proyecto de Métodos Numéricos II},
-    pdfkeywords={Homicidio doloso, Métodos Numéricos, Series de Tiempo, Interpolación de Lagrange, Predicción (Forecasting)},
-    % pdfpagemode=FullScreen,
-    % bookmarks=true,
-    % bookmarksopen=false,
-    linktocpage=true,
-	colorlinks=true,
-	linkcolor={[rgb]{0,0,0}},
-	linktoc=all,
-        citecolor={[rgb]{0,0,0}},
-        urlcolor={[rgb]{0,0,0}},
-        filecolor={[rgb]{0,0,0}}
+    % Opciones de borde (necesarias para desactivar el marco de color si 'colorlinks=false')
+    % Aquí se usa para definir un borde invisible (0 1 0).
+    pdfborder={0 1 0}, 
+    pdfcreator=LuaLaTeX,
+    unicode=true, % Compatibilidad con caracteres Unicode (crucial para LuaLaTeX)
+    % Metadatos del PDF
+    pdftitle={Disquisitio Elementalis},
+    pdfauthor={Vicente C. Gámez},
+    pdfsubject={Plantilla para plantillas de libros.},
+    pdfkeywords={Books, LaTeX, Advanced LaTeX, Class, Math, Template},
+    % Control de enlaces
+    linktoc=all,      % Aplica el enlace a todo el bloque ToC (título y página)
+    % linktocpage=true, % Solo el número de página en ToC será un enlace (no el texto del título)
+    colorlinks=true,  % Usar color en lugar de marcos
+    linkcolor=black,  % Enlaces internos (secciones, figuras)
+    citecolor=black,  % Citas
+    urlcolor=black,   % URLs
 }
 
-\makeatletter
-\AtBeginDocument{
-    \def\Hy@colorlink#1{\begingroup\color{mainc}\let\@currentcolor\@empty}
-    \def\Hy@endcolorlink{\endgroup}
+% Comando para forzar color y configuración de enlace localmente
+\newcommand{\forcecolor}[2]{%
+    \hypersetup{linkcolor=#1,urlcolor=#1}% Configura hyperref localmente
+    \color{#1}% Configura el texto localmente
+    #2% Imprime el contenido
 }
-\makeatother
+
+% =====================================================
+% 2. Parche de Identidad para Tcolorbox
+% =====================================================
+\ExplSyntaxOn
+\AtBeginDocument{
+    % Lista de nombres internos definidos en 10-Math.sty
+    \clist_map_inline:nn { theorem, axiom, corollary, definition, property, lemma, proposition, example, exercise, note, observation }
+    {
+        % Verificamos si el contador interno de tcolorbox existe
+        \cs_if_exist:cT { c@tcb@cnt@#1 }%
+        {
+            % Redefinimos el identificador H (Hyperref) para que sea único.
+            % Ejemplo: \theHtcb@cnt@theorem será "theorem.1.1" en lugar de solo "1.1"
+            \cs_set:cpn { theHtcb@cnt@#1 } { #1.\use:c { thetcb@cnt@#1 } }%
+        }
+    }
+}
+\ExplSyntaxOff
+
+% =====================================================
+% 3. Configuración de BibLaTeX (Bibliografía)
+% =====================================================
+\RequirePackage{csquotes} % Necesario para comillas inteligentes en BibLaTeX
+
+% --- CORRECCIÓN AQUÍ ---
+% Esto asegura que la lista de referencias use [1] en lugar de 1.
+\DeclareFieldFormat{labelnumberwidth}{\mkbibbrackets{#1}}
 
 %%%%%%%%%%%%%%%%%%%% Comandos para cambiar las referencias %%%%%%%%%%%%
 
@@ -45,9 +347,10 @@
     {}%
 }
 
-% Crear referencia para sitio web
+% Crear referencia para sitio web con link forzado a color mainc
 \DeclareFieldFormat[website]{title}{#1}
-\DeclareFieldFormat[website]{url}{\href{#1}{#1}}
+% \DeclareFieldFormat[website]{url}{\forcecolor{mainc}{\bfseries\href{#1}{#1}}}
+\DeclareFieldFormat[website]{url}{\forcecolor{mainc}{\url{#1}}}
 
 \DeclareBibliographyDriver{website}{%
   \usebibmacro{bibindex}%
@@ -81,8 +384,6 @@
     \iffieldundef{doi}
         {}
         {\href{\thefield{doi}}{\thefield{doi}}}
-    %\setunit{\addspace}%
-    %\usebibmacro{finentry}}
     \iflistundef{pageref}{}{\usebibmacro{pageref}}\iflistundef{shorthand}{}{\usebibmacro{shorthand}}}
 
 % Cambios en la colección
@@ -102,180 +403,102 @@
     \printfield{addendum}
     \iflistundef{pageref}{}{\usebibmacro{pageref}}\iflistundef{shorthand}{}{\usebibmacro{shorthand}}}
 
-% Redefinir \cite para que no haya paréntesis
+% Redefinir \cite para que use corchetes en el texto [1]
 \DeclareCiteCommand{\cite}
-    {}%
-    {\bibhyperref{\printfield{labelnumber}}}%
-    {\multicitedelim}%
-    {}%
+  {\usebibmacro{prenote}}
+  {\mkbibbrackets{\bibhyperref{\printfield{labelnumber}}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
 
 %%%%%%%%%%%%%%%%%%%% Fin de los comandos %%%%%%%%%%%%%%%%%
 
 \addbibresource{references.bib}
 
 
-% \makeatletter
-% \renewcommand{\tagform@}[1]{
-%     \text{
-%         \fontencoding{T1}\fontfamily{phv}\selectfont\color{mainc!80!white}\ignorespaces #1\unskip
-%     }
-% }
-% \makeatother
-
-
-% \renewcommand{\eqref}[1]{\text{{\fontencoding{T1}\fontfamily{phv}\selectfont(\ref{#1})}}}
-
 % =====================================================
-% Estilo base
+% 4. Sistema de Referencias Cruzadas (Expl3)
 % =====================================================
-\newcommand{\refstyle}[1]{\textup{#1}}
+\newcommand{\refstyle}[1]{\textup{\forcecolor{mainc}{\bfseries#1}}}
 
 \ExplSyntaxOn
 
-% =====================================================
-% Enlace general (sin cambios)
-% =====================================================
+% --- Enlace nativo ---
+% Usamos \ref nativo. Gracias al parche de arriba, el enlace interno
+% ahora es único y correcto.
 \cs_new:Npn \ref_env_link:nn #1#2 {
-  \refstyle{\hyperref[#1:#2]{\ref*{#1:#2}}}
+    \refstyle{\ref{#1:#2}}
 }
 
-% =====================================================
-% Mecanismo general de listas de referencias
-% =====================================================
+% --- Mecanismo de listas (Estándar) ---
 \cs_new_protected:Npn \ref_env_list:nnnn #1#2#3#4
-  {
-    \seq_set_split:Nnn \l_tmpa_seq { , } { #4 }
-    \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 1 }
-      {
-        #2~\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} }
-      }
-      {
-        \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 2 }
-          {
-            #3~
-            \ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} }~y~%
-            \ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {2} }
-          }
-          {
-            #3~
-            \seq_pop_right:NN \l_tmpa_seq \l_tmpb_tl
-            \seq_map_indexed_inline:Nn \l_tmpa_seq
-              {
-                \ref_env_link:nn {#1} {##2}%
-                \int_compare:nNnF {##1} = { \seq_count:N \l_tmpa_seq } {,~}
-              }
-            \space y~\ref_env_link:nn {#1} { \l_tmpb_tl }
-          }
-      }
-  }
+    {
+        \seq_set_split:Nnn \l_tmpa_seq { , } { #4 }
+        \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 1 }
+            { #2~\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} } }
+            {
+                \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 2 }
+                    {
+                        #3~\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} }~y~%
+                        \ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {2} }
+                    }
+                    {
+                        #3~\seq_pop_right:NN \l_tmpa_seq \l_tmpb_tl
+                        \seq_map_indexed_inline:Nn \l_tmpa_seq
+                            { \ref_env_link:nn {#1} {##2}\int_compare:nNnF {##1} = { \seq_count:N \l_tmpa_seq } {,~} }
+                        \space y~\ref_env_link:nn {#1} { \l_tmpb_tl }
+                    }
+            }
+    }
 
-% =====================================================
-% Variante para ecuaciones con paréntesis
-% =====================================================
+% --- Variante para ecuaciones (Estándar) ---
 \cs_new_protected:Npn \ref_env_list_paren:nnnn #1#2#3#4
-  {
-    \seq_set_split:Nnn \l_tmpa_seq { , } { #4 }
-    \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 1 }
-      {
-        #2~(\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} })
-      }
-      {
-        \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 2 }
-          {
-            #3~
-            (\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} })~y~%
-            (\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {2} })
-          }
-          {
-            #3~
-            \seq_pop_right:NN \l_tmpa_seq \l_tmpb_tl
-            \seq_map_indexed_inline:Nn \l_tmpa_seq
-              {
-                (\ref_env_link:nn {#1} {##2})%
-                \int_compare:nNnF {##1} = { \seq_count:N \l_tmpa_seq } {,~}
-              }
-            \space y~(\ref_env_link:nn {#1} { \l_tmpb_tl })
-          }
-      }
-  }
+    {
+        \seq_set_split:Nnn \l_tmpa_seq { , } { #4 }
+        
+        % Definimos una función auxiliar interna para crear el link completo "(#)"
+        % Usa \hyperref[label]{texto} para forzar el destino.
+        \cs_set:Npn \__ref_paren_item:n ##1 {
+             (\hyperref[#1:##1]{\forcecolor{mainc}{\bfseries\ref*{#1:##1}}})
+        }
 
-% =====================================================
-% Comandos públicos
-% =====================================================
+        \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 1 }
+            % Caso 1: Un solo elemento
+            { #2~\__ref_paren_item:n { \seq_item:Nn \l_tmpa_seq {1} } }
+            {
+                \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 2 }
+                    % Caso 2: Dos elementos
+                    {
+                        #3~\__ref_paren_item:n { \seq_item:Nn \l_tmpa_seq {1} }~y~%
+                        \__ref_paren_item:n { \seq_item:Nn \l_tmpa_seq {2} }
+                    }
+                    % Caso 3: Lista n elementos
+                    {
+                        #3~\seq_pop_right:NN \l_tmpa_seq \l_tmpb_tl
+                        \seq_map_indexed_inline:Nn \l_tmpa_seq
+                            { \__ref_paren_item:n { ##2 }\int_compare:nNnF {##1} = { \seq_count:N \l_tmpa_seq } {,~} }
+                        \space y~\__ref_paren_item:n { \l_tmpb_tl }
+                    }
+            }
+    }
+
+% --- Comandos públicos (Prefijos coincidentes con 10-Math) ---
 \NewDocumentCommand{\refthm}{m}{\ref_env_list:nnnn {thm} {Teorema} {Teoremas} {#1}}
+\NewDocumentCommand{\refaxm}{m}{\ref_env_list:nnnn {axm} {Axioma} {Axiomas} {#1}}
 \NewDocumentCommand{\refcor}{m}{\ref_env_list:nnnn {cor} {Corolario} {Corolarios} {#1}}
 \NewDocumentCommand{\refdef}{m}{\ref_env_list:nnnn {def} {Definición} {Definiciones} {#1}}
-\NewDocumentCommand{\reflemma}{m}{\ref_env_list:nnnn {lemma} {Lema} {Lemas} {#1}}
+\NewDocumentCommand{\reflem}{m}{\ref_env_list:nnnn {lem} {Lema} {Lemas} {#1}}
+\NewDocumentCommand{\refprp}{m}{\ref_env_list:nnnn {prop} {Proposición} {Proposiciones} {#1}}
 \NewDocumentCommand{\refobs}{m}{\ref_env_list:nnnn {obs} {Observación} {Observaciones} {#1}}
-\NewDocumentCommand{\refprop}{m}{\ref_env_list:nnnn {prop} {Proposición} {Proposiciones} {#1}}
-\NewDocumentCommand{\refexample}{m}{\ref_env_list:nnnn {example} {Ejemplo} {Ejemplos} {#1}}
-\NewDocumentCommand{\refnote}{m}{
-    \ref_env_list:nnnn {note} {Nota} {Notas} {#1}
-}
-
-% =====================================================
-% Nuevo comando para ecuaciones con paréntesis
-% =====================================================
-\NewDocumentCommand{\refeqn}{m}{
-    \ref_env_list_paren:nnnn {eq} {Ecuación} {Ecuaciones} {#1}
-}
+\NewDocumentCommand{\refexm}{m}{\ref_env_list:nnnn {exm} {Ejemplo} {Ejemplos} {#1}}
+\NewDocumentCommand{\refexe}{m}{\ref_env_list:nnnn {exe} {Ejercicio} {Ejercicios} {#1}}
+\NewDocumentCommand{\refnot}{m}{ \ref_env_list:nnnn {not} {Nota} {Notas} {#1} }
+\NewDocumentCommand{\refeqn}{m}{ \ref_env_list_paren:nnnn {eq} {Ecuación} {Ecuaciones} {#1} }
+\NewDocumentCommand{\reffig}{m}{\ref_env_list:nnnn {fig} {Figura} {Figuras} {#1}}
+\NewDocumentCommand{\reftab}{m}{\ref_env_list:nnnn {tab} {Tabla} {Tablas} {#1}}
+\NewDocumentCommand{\refcode}{m}{\ref_env_list:nnnn {code} {Código} {Códigos} {#1}}
+\NewDocumentCommand{\refsec}{m}{\ref_env_list:nnnn {section} {Sección} {Secciones} {#1}}
+\NewDocumentCommand{\refapx}{m}{\ref_env_list:nnnn {appendix} {Apéndice} {Apéndices} {#1}}
 
 \ExplSyntaxOff
 
-
-
-
-
-
-
-
-
-
-% % Referencias
-% \ExplSyntaxOn
-
-% \cs_new:Npn \ref_env_link:nn #1#2 {
-%   \refstyle{\hyperref[#1:#2]{\ref*{#1:#2}}}
-% }
-
-% \cs_new_protected:Npn \ref_env_list:nnnn #1#2#3#4
-%   {
-%     \seq_set_split:Nnn \l_tmpa_seq { , } { #4 }
-%     \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 1 }
-%       {
-%         % Caso: sólo una referencia
-%         #2~\ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} }
-%       }
-%       {
-%         \int_compare:nNnTF { \seq_count:N \l_tmpa_seq } = { 2 }
-%           {
-%             % Caso: exactamente dos referencias (con espacio bien puesto)
-%             #3~
-%             \ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {1} }~y~%
-%             \ref_env_link:nn {#1} { \seq_item:Nn \l_tmpa_seq {2} }
-%           }
-%           {
-%             % Caso: tres o más referencias
-%             #3~
-%             \seq_pop_right:NN \l_tmpa_seq \l_tmpb_tl
-%             \seq_map_inline:Nn \l_tmpa_seq
-%               {
-%                 \ref_env_link:nn {#1} {##1},\,
-%               }
-%             y~\ref_env_link:nn {#1} { \l_tmpb_tl }
-%           }
-%       }
-%   }
-
-% % Comandos públicos
-% \NewDocumentCommand{\refthm}{m}{\ref_env_list:nnnn {thm} {Teorema} {Teoremas} {#1}}
-% \NewDocumentCommand{\refcor}{m}{\ref_env_list:nnnn {cor} {Corolario} {Corolarios} {#1}}
-% \NewDocumentCommand{\refdef}{m}{\ref_env_list:nnnn {def} {Definición} {Definiciones} {#1}}
-% \NewDocumentCommand{\reflemma}{m}{\ref_env_list:nnnn {lemma} {Lema} {Lemas} {#1}}
-% \NewDocumentCommand{\refobs}{m}{\ref_env_list:nnnn {obs} {Observación} {Observaciones} {#1}}
-% \NewDocumentCommand{\refprop}{m}{\ref_env_list:nnnn {prop} {Proposición} {Proposiciones} {#1}}
-% \NewDocumentCommand{\refexample}{m}{\ref_env_list:nnnn {example} {Ejemplo} {Ejemplos} {#1}}
-% \NewDocumentCommand{\refnote}{m}{\ref_env_list:nnnn {note} {Nota} {Notas} {#1}}
-% \NewDocumentCommand{\refeq}{m}{\ref_env_list:nnnn {eq} {Ecuación} {Ecuaciones} {#1}}
-
-% \ExplSyntaxOff
+\endinput

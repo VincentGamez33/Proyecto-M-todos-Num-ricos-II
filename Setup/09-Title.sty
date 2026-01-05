@@ -29,9 +29,10 @@
         \sffamily
 
         \begin{flushright}
-            \textsuperscript{Enviado por: #3}\\
-            \textsuperscript{Aceptado por: Editor Use}\\
-            \textsuperscript{Publicado por: Editor Use}\\
+            \textsuperscript{Enviado: #3}\\
+            \textsuperscript{Aceptado por: Alejandro Soto}\\ \vspace*{-1mm}
+            \textsuperscript{González}\\
+            \textsuperscript{Publicado en: ESFM-IPN}\\
         \end{flushright}
         \smallskip
     
@@ -49,8 +50,8 @@
         \boxtitle{Correo electrónico}
         
         \smallskip
-        {\raggedleft \vbox to0.5in {\fontsize{7}{7}\creato\selectfont\href{mailto:#7}{#7}}}
-        {\raggedright \vbox to0.5in {\fontsize{7}{7}\sffamily Template developed by \href{https://github.com/VincentGamez33}{\textbf{Vicente C. Gámez}} \\ \copyright\,The Author. This template is published under a CC-BY license: \href{https://creativecommons.org/licenses/by/4.0/}{https://creativecommons.org/licenses/by/4.0/}}} % DOI y copyright
+        {\raggedleft \vbox to0.5in {\fontsize{7}{7}\creato\selectfont\forcecolor{mainc}{\bfseries\href{mailto:#7}{#7}}}}
+        {\raggedright \vbox to0.5in {\fontsize{7}{7}\sffamily Plantilla desarrollada por \href{https://github.com/VincentGamez33}{\textbf{Vicente C. Gámez}} \\ \copyright\,El Autor. Esta plantilla es publicada bajo la licencia CC-BY: \forcecolor{mainc}{\bfseries\href{https://creativecommons.org/licenses/by/4.0/}{https://creativecommons.org/licenses/by/4.0/}}}} % DOI y copyright
     \end{minipage}
     \hfill
     \begin{minipage}[t]{0.75\textwidth} % Minipágina para título a la derecha
@@ -64,9 +65,9 @@
             \section*{Resumen}
         }
         {\justifying
-            \setlength{\parskip}{9pt}   
+            \setlength{\parskip}{9pt}
             #8 \bigskip % Resumen
         }
     \end{minipage}
-    \myline \bigskip
+    \myline \medskip
 }

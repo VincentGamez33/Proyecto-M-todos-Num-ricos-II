@@ -1,8 +1,34 @@
-\titleformat*{\section}{\fontsize{12}{14.4}\creato\bfseries} % Formato de título para secciones
-\titleformat*{\subsection}{\creato\bfseries}
-\titleformat*{\subsubsection}{\creato\bfseries}
+% ==========================================
+% CONFIGURACIÓN DE TÍTULOS (Estilo Orgánico)
+% ==========================================
 
-\titlespacing{\section}{2pt}{2\parskip}{2pt}
-\titlespacing{\subsection}{3pt}{\parskip}{2pt}
-\titlespacing{\subsubsection}{2pt}{.5\parskip}{2pt}
-% \setcounter{secnumdepth}{0}
+% 1. SECCIÓN PRINCIPAL
+% Grande, color azul sobrio y una línea horizontal fina debajo para separar temas.
+\titleformat{\section}
+  [hang] % Estilo (colgante)
+  {\fontsize{14}{16}\creato\bfseries\color{mainc!90!black}} % Formato de texto
+  {\thesection.} % Etiqueta (Número)
+  {0.5em} % Espacio entre número y título
+  {} % Código antes del título
+  [{\titlerule[0.8pt]}] % Código después: Una línea sutil de 0.8pt
+\titlespacing{\section}{0pt}{3.5ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+
+% 2. SUBSECCIÓN
+\titleformat{\subsection}
+  [hang]
+  {\fontsize{12}{14}\creato\bfseries\color{mainc!90!white}}
+  {\thesubsection}
+  {0.5em}
+  {}
+\titlespacing{\subsection}{0pt}{2.5ex plus 1ex minus .2ex}{1ex plus .2ex}
+
+
+% 3. SUBSUBSECCIÓ
+\titleformat{\subsubsection}
+  [hang]
+  {\fontsize{11}{13}\creato\bfseries\color{black!90}} % Casi negro
+  {\thesubsubsection}
+  {0.5em}
+  {}
+\titlespacing{\subsubsection}{0pt}{2ex plus 1ex minus .2ex}{0.5ex plus .2ex}

@@ -109,8 +109,30 @@
         top=0pt,
         bottom=0pt
     ]
-    \oldinputminted[#1]{#2}{#3}%
+    \oldinputminted[#1]{#2}{Code/Python/#3}%
     \end{tcolorbox}
+}
+
+% 1. Definimos el contador (vinculado a la sección, ej: 1.1)
+\newcounter{code}[section]
+\renewcommand{\thecode}{\thesection.\arabic{code}}
+
+% 2. Definimos el entorno 'code'
+% Argumento 1 {m}: El Título del código.
+% Argumento 2 {m}: La Etiqueta (sin prefijo).
+\NewDocumentEnvironment{code}{ m m }{
+    \par\addvspace{3.5mm} % Espacio vertical antes
+    \noindent
+    % --- LÓGICA DE REFERENCIA ---
+    \refstepcounter{code}   % Incrementa el contador
+    \label{code:#2}         % Crea la etiqueta interna 'code:tu_etiqueta'
+    % --- TÍTULO (CAPTION) ---
+    % Ajusta este formato a tu gusto (negrita, color principal, etc.)
+    \centering%
+    {\bfseries\color{mainc} Código \thecode:~}#1%
+    \par\nointerlineskip\vspace*{1pt} % Un pequeño espacio antes de la caja
+}{
+    \par\addvspace{\baselineskip} % Espacio vertical después
 }
 
 \makeatother

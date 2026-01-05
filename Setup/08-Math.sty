@@ -1,288 +1,540 @@
-\newtcbtheorem{theorem}{}{
-    % Estilo del teorema
-    theorem style=change break,
-    enhanced,
-    breakable,
-    % Bordes
-    boxrule=0pt,
-    frame hidden,
-    borderline north={1pt}{0pt}{mainc},
-    borderline south={1pt}{0pt}{mainc},
-    % Sombra
-    % drop shadow={shadow xshift=0mm,shadow yshift=-0.8mm,opacity=0.25},
-    % Colores
-    colback=white,
-    coltitle=mainc,
-    attach title to upper={},
-    % Márgenes
-    left=-0.7mm,
-    right=-0.7mm,
-    top=-1mm,
-    bottom=1mm,
-    % Esquinas
-    sharp corners,
-    % Título
-    before title={Teorema~},
-    after title={~},
-    fonttitle=\par\noindent\creato\bfseries,
-    % Texto
-    fontupper=\normalsize\setlength{\parindent}{1em},
-}{thm}
+% ==============================================================================
+% Paquete: Setup/10-Math.sty
+% Autor: Vicente C Gámez
+% Clase: Disquisitio Elementalis
+% Fecha: 2025/12/13
+%
+% Descripción:
+%   Centraliza la configuración matemática avanzada del proyecto.
+%   Maneja entornos de teoremas (tcolorbox), macros semánticas y
+%   operadores inteligentes mediante LaTeX3 (expl3).
+%
+% DEPENDENCIAS EXTERNAS (Deben definirse antes de cargar este paquete):
+%   - Colores: 'mainc' (Color principal), 'boxback' (Fondo de cajas).
+%   - Fuentes: \creato (Títulos), \Lato (Cuerpo sans-serif/negrita).
+% ==============================================================================
 
-\newtcbtheorem{corollary}{}{
-    % Estilo del teorema
-    theorem style=change break,
-    enhanced,
-    breakable,
-    % Bordes
-    boxrule=0pt,
-    frame hidden,
-    borderline north={1pt}{0pt}{mainc},
-    borderline east={1pt}{0pt}{mainc},
-    borderline south={1pt}{0pt}{mainc},
-    % Sombra
-    drop shadow={shadow xshift=-0.7mm,shadow yshift=-0.7mm,opacity=0.25},
-    % Colores
-    colback=white,
-    coltitle=mainc,
-    attach title to upper={},
-    % Márgenes
-    left=-0.7mm,
-    right=1mm,
-    top=0mm,
-    bottom=1mm,
-    % Esquinas
-    sharp corners,
-    % Título
-    before title={Corolario~},
-    after title={~},
-    fonttitle=\par\noindent\creato\bfseries,
-    % Texto
-    fontupper=\normalsize\setlength{\parindent}{1em},
-}{cor}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{Setup/08-Math}[2025/12/13 v1.0 Custom Math & Theorems Module]
 
-\newtcbtheorem{definition}{}{
-    % Estilo del teorema
-    theorem style=change break,
-    enhanced,
-    breakable,
-    % Bordes
-    boxrule=0pt,
-    frame hidden,
-    borderline east={1pt}{0pt}{mainc},
-    borderline south={1pt}{0pt}{mainc},
-    % Sombra
-    drop shadow={shadow xshift=0.8mm,shadow yshift=-0.7mm,opacity=0.25},
-    % Colores
-    colback=white,
-    coltitle=mainc,
-    attach title to upper={},
-    % Márgenes
-    left=1mm,
-    right=1mm,
-    top=0mm,
-    bottom=1mm,
-    % Esquinas
-    sharp corners,
-    % Título
-    before title={Definición~},
-    after title={~},
-    fonttitle=\par\noindent\creato\bfseries,
-    % Texto
-    fontupper=\normalsize\setlength{\parindent}{1em},
-}{def}
+% ------------------------------------------------------------------------------
+% 1. Carga de Paquetes Base
+% ------------------------------------------------------------------------------
+\RequirePackage{mathtools}       % Extensión de amsmath (fixes, \DeclarePairedDelimiter, etc.)
+\RequirePackage{amssymb}         % Símbolos matemáticos (\mathbb, \square, etc.)
+\RequirePackage{xparse}          % Interfaz para comandos avanzados (NewDocumentCommand)
+\RequirePackage[most]{tcolorbox} % Motor gráfico para cajas de teoremas
+\RequirePackage{tikz}
+\usetikzlibrary{calc}            % Cálculos de coordenadas para overlays gráficos
 
-\newtcbtheorem{lemma}{}{
-    % Estilo del teorema
-    theorem style=change break,
-    enhanced,
-    breakable,
-    % Bordes
-    boxrule=0pt,
-    frame hidden,
-    borderline north={1pt}{0pt}{mainc},
-    borderline south={1pt}{0pt}{mainc},
-    % Sombra
-    drop shadow={shadow xshift=0.8mm,shadow yshift=-0.7mm,opacity=0.25},
-    % Colores
-    colback=mainc!15,
-    coltitle=mainc,
-    attach title to upper={},
-    % Márgenes
-    left=1mm,
-    right=1mm,
-    top=0mm,
-    bottom=1mm,
-    % Esquinas
-    sharp corners,
-    % Título
-    before title={Lema~},
-    after title={~},
-    fonttitle=\par\noindent\creato\bfseries,
-    % Texto
-    fontupper=\normalsize\setlength{\parindent}{1em},
-}{lemma}
+% Fallback defensivo
+\providecolor{mainc}{RGB}{0,0,0} % Negro por defecto si no existe
+\providecolor{boxback}{RGB}{245,245,245}
+\providecommand{\creato}{\sffamily} % Fallback de fuente
+\providecommand{\Lato}{\sffamily}
 
-\newtcbtheorem{proposition}{}{
-    % Estilo del teorema
-    theorem style=change break,
-    enhanced,
-    breakable,
-    % Bordes
-    boxrule=0pt,
-    frame hidden,
-    borderline west={1pt}{0pt}{mainc},
-    borderline north={1pt}{0pt}{mainc},
-    % Colores
-    colback=white,
-    coltitle=mainc,
-    attach title to upper={},
-    % Márgenes
-    left=0.7mm,
-    right=-0.7mm,
-    top=-0.7mm,
-    bottom=-0.7mm,
-    % Esquinas
-    sharp corners,
-    % Título
-    before title={Proposición~},
-    after title={~},
-    fonttitle=\par\noindent\creato\bfseries,
-    % Texto
-    fontupper=\normalsize\setlength{\parindent}{1em},
-}{prop}
+% ------------------------------------------------------------------------------
+% 2. Configuración Visual de Teoremas (tcolorbox)
+% ------------------------------------------------------------------------------
+% Definición de grosores y estilos reutilizables para mantener consistencia.
+% NOTA: Usa los colores 'mainc' y 'boxback' definidos externamente.
 
-\newtcbtheorem{example}{}{
-    % Estilo del teorema
-    theorem style=change break,
-    enhanced,
-    breakable,
-    % Bordes
-    boxrule=0pt,
-    frame hidden,
-    borderline west={1pt}{0pt}{mainc},
-    % Colores
-    colback=white,
-    coltitle=mainc,
-    attach title to upper={},
-    % Márgenes
-    left=0.5mm,
-    right=-0.7mm,
-    top=-1.3mm,
-    bottom=0.5mm,
-    % Esquinas
-    sharp corners,
-    % Título
-    before title={Ejemplo~},
-    after title={~},
-    fonttitle=\par\noindent\creato\bfseries,
-    % Texto
-    fontupper=\normalsize\setlength{\parindent}{1em},
-    % Superposición
-    overlay={
-        \draw[mainc,line width=1pt] (frame.south west) -- ($(frame.south west)+(0.3\linewidth,0)$);
+\def\tcbthick{1.5pt} % Grosor estándar de bordes
+
+\tcbset{
+    % --- Espaciado Vertical ---
+    strong theorem spacing/.style={before skip=10pt, after skip=10pt},
+    medium theorem spacing/.style={before skip=8pt, after skip=8pt},
+    soft theorem spacing/.style={before skip=6pt, after skip=6pt},
+    % --- Estilo Base (Padre) ---
+    base/.style={
+        theorem style=change break, % Permite ruptura de página con estilo
+        enhanced jigsaw,            % Mejor renderizado de bordes
+        breakable,                  % Caja divisible entre páginas
+        colback=boxback,            % Color de fondo
+        coltitle=mainc,             % Color del título
+        fonttitle=\par\noindent\creato\bfseries\normalsize,
+        fontupper=\normalsize\setlength{\parindent}{1em},
+        attach title to upper={},   % Título integrado en el texto (run-in)
+        sharp corners,              % Diseño plano/moderno
+        boxrule=0pt,                % Sin borde perimetral por defecto
+        frame hidden,
+        left=0.75mm, right=0.75mm, top=0mm, bottom=1mm, % Márgenes internos
+        after title={~},            % Separador tras el título
     },
-}{exm}
+    % --- Estilos Específicos (Hijos) ---
+    theorem/.style={
+        base,
+        borderline north={\tcbthick}{0pt}{mainc},
+        borderline south={\tcbthick}{0pt}{mainc},
+        before title={Teorema~},
+        strong theorem spacing,
+    },
+    axiom/.style={
+        base,
+        borderline north={\tcbthick}{0pt}{mainc},
+        borderline east={\tcbthick}{0pt}{mainc},
+        borderline south={\tcbthick}{0pt}{mainc},
+        before title={Axioma~},
+        strong theorem spacing,
+    },
+    corollary/.style={
+        base,
+        borderline north={\tcbthick}{0pt}{mainc},
+        borderline east={\tcbthick}{0pt}{mainc},
+        borderline south={\tcbthick}{0pt}{mainc},
+        before title={Corolario~},
+        strong theorem spacing,
+    },
+    definition/.style={
+        base,
+        borderline east={\tcbthick}{0pt}{mainc},
+        borderline south={\tcbthick}{0pt}{mainc},
+        before title={Definición~},
+        medium theorem spacing,
+    },
+    property/.style={ % Hereda de definición
+        definition,
+        before title={Propiedad~},
+    },
+    lemma/.style={
+        base,
+        borderline north={\tcbthick}{0pt}{mainc},
+        borderline east={\tcbthick}{0pt}{mainc},
+        before title={Lema~},
+        medium theorem spacing,
+    },
+    proposition/.style={
+        base,
+        borderline west={\tcbthick}{0pt}{mainc},
+        borderline north={\tcbthick}{0pt}{mainc},
+        before title={Proposición~},
+        strong theorem spacing,
+    },
+    observation/.style={
+        base,
+        colback=shade,
+        borderline west={\tcbthick}{0pt}{mainc},
+        before title={Observación~},
+        soft theorem spacing,
+    },
+    % Estilo Ejemplo: Línea decorativa inferior
+    example/.style={
+        base,
+        borderline west={\tcbthick}{0pt}{mainc},
+        before title={Ejemplo~},
+        soft theorem spacing,
+        overlay={
+            \draw[mainc,line width=\tcbthick] (frame.south west) -- ($(frame.south west)!0.3!(frame.south east)$);
+        },
+    },
+    % Estilo Ejercicio: Decoración superior tipo "folder"
+    exercise/.style={
+        base,
+        before title={Ejercicio~},
+        medium theorem spacing,
+        overlay={
+            \draw[mainc,line width=3pt] (frame.north west) -| (frame.south east);
+            \shade[left color=boxback,right color=m15] (frame.north west) rectangle (frame.south east);
+        },
+    },
+    note/.style={
+        base,
+        borderline={\tcbthick}{0pt}{mainc}, % Borde completo
+        before title={Nota~},
+        soft theorem spacing,
+    },
+}
 
+% ------------------------------------------------------------------------------
+% 3. Instanciación de Entornos
+% ------------------------------------------------------------------------------
+% Sintaxis: \newtcbtheorem[counter]{entorno}{Título en PDF}{estilo}{prefijo_ref}
 
+\newtcbtheorem[number within=section]{theorem}{}{theorem}{thm}
+\newtcbtheorem[number within=section]{axiom}{}{axiom}{axm}
+\newtcbtheorem[number within=section]{corollary}{}{corollary}{cor}
+\newtcbtheorem[number within=section]{definition}{}{definition}{def}
+\newtcbtheorem[number within=section]{property}{}{property}{prp}
+\newtcbtheorem[number within=section]{lemma}{}{lemma}{lem}
+\newtcbtheorem[number within=section]{proposition}{}{proposition}{prop}
+\newtcbtheorem{observation}{}{observation}{obs} % Sin numeración
+\newtcbtheorem[number within=section]{example}{}{example,}{exm}
+\newtcbtheorem[number within=section]{exercise}{}{exercise}{exe}
+\newtcbtheorem[number within=section]{note}{}{note,}{not}
+
+% Caja genérica sin título automático (para casos especiales)
+\newtcolorbox{examplebox}{
+    example,
+    title={},
+    before title={},
+    after title={},
+}
+
+% ------------------------------------------------------------------------------
+% 4. Entornos de Demostración y Solución (Gestión de QED)
+% ------------------------------------------------------------------------------
+% Incluye lógica para poner el símbolo QED al final, incluso en ecuaciones.
+
+\newcommand{\Square}{\textcolor{mainc}{\ensuremath{\square}}}
+\newcommand{\BlackSquare}{\textcolor{mainc}{\hfill\ensuremath{\blacksquare}}}
+
+\makeatletter
+% Flag interno para saber si el usuario puso el QED manualmente
+\newif\if@qedused
+\@qedusedfalse
+
+% Comandos manuales para forzar QED
+\newcommand{\QEDwhite}{%
+    \global\@qedusedtrue%
+    \ifmmode\tag*{\Square}\else\unskip\nobreak\hfill\hbox{\Square}\fi
+}
+\newcommand{\QEDblack}{%
+    \global\@qedusedtrue%
+    \ifmmode\tag*{\BlackSquare}\else\unskip\nobreak\hfill\hbox{\BlackSquare}\fi
+}
+
+% -- Entorno Solución --
+\newenvironment{solucion}{%
+    \vspace*{2mm plus 1mm minus 1mm}
+    \par\noindent
+    \begingroup\normalfont
+        \global\@qedusedfalse
+        \textcolor{mainc}{\Lato\bfseries\itshape Solución.}%
+        \hspace*{1.5mm plus 1mm minus 1mm}%
+        \ignorespaces
+}{%
+        \if@qedused\else\unskip\nobreak\hfill\hbox{\Square}\fi
+    \par\endgroup
+}
+
+% -- Entorno Demostración --
+\newenvironment{demostracion}{%
+    \vspace*{2mm plus 1mm minus 1mm}
+    \par\noindent
+    \begingroup\normalfont
+        \global\@qedusedfalse
+        \textcolor{mainc}{\Lato\bfseries\itshape Demostración.}%
+        \hspace*{1.5mm plus 1mm minus 1mm}%
+        \ignorespaces
+}{%
+        \if@qedused\else\unskip\nobreak\hfill\hbox{\BlackSquare}\fi
+    \par\endgroup
+}
+\makeatother
+
+% ------------------------------------------------------------------------------
+% 5. Macros Semánticas: Conjuntos y Análisis
+% ------------------------------------------------------------------------------
+
+% Conjuntos Numéricos
+% Uso: \RR -> R, \RR[n] -> R^n, \RR[n][+] -> R^n_+
 \NewDocumentCommand{\RR}{oo}{\mathbb{R}\IfValueT{#1}{^{#1}}\IfValueT{#2}{_{#2}}}
 \NewDocumentCommand{\NN}{oo}{\mathbb{N}\IfValueT{#1}{^{#1}}\IfValueT{#2}{_{#2}}}
 \NewDocumentCommand{\ZZ}{oo}{\mathbb{Z}\IfValueT{#1}{^{#1}}\IfValueT{#2}{_{#2}}}
 \NewDocumentCommand{\QQ}{oo}{\mathbb{Q}\IfValueT{#1}{^{#1}}\IfValueT{#2}{_{#2}}}
 \NewDocumentCommand{\CC}{oo}{\mathbb{C}\IfValueT{#1}{^{#1}}\IfValueT{#2}{_{#2}}}
-% - Valor esperado
-\newcommand{\EE}{\mathbb{E}}
+\NewDocumentCommand{\FF}{oo}{\mathbb{F}\IfValueT{#1}{^{#1}}\IfValueT{#2}{_{#2}}}
 
+% Operadores comunes
+\newcommand{\EE}{\mathbb{E}} % Esperanza / Valor esperado
+\newcommand{\Ce}[1]{\bar{#1}} % Cerradura
+\DeclareMathOperator*{\vol}{vol}
+\DeclareMathOperator*{\Inte}{Int}
+\DeclareMathOperator*{\Fr}{Fr}
+\DeclareMathOperator*{\Ext}{Ext}
+\DeclareMathOperator*{\divg}{div}
+\DeclareMathOperator*{\rot}{rot}
+\DeclareMathOperator*{\grad}{grad}
 
-\makeatletter
-
-% ==================================================
-% Símbolos personalizados
-% ==================================================
-\newcommand{\Square}{\textcolor{mainc}{\ensuremath{\square}}}
-\newcommand{\Blacksquare}{\textcolor{mainc}{\ensuremath{\blacksquare}}}
-
-% ==================================================
-% Condition flag
-% ==================================================
-\newif\if@qedused
-\@qedusedfalse
-
-% ==================================================
-% Comando para insertar el símbolo dentro del entorno
-% ==================================================
-\newcommand{\QEDwhite}{%
-    \global\@qedusedtrue%
-    \ifmmode
-        \tag*{\Square}% para equation, align, etc.
-    \else
-        \unskip\nobreak\hfill\hbox{\Square}%
-    \fi
-}
-
-\newcommand{\QEDblack}{%
-    \global\@qedusedtrue%
-    \ifmmode
-        \tag*{\Blacksquare}% para equation, align, etc.
-    \else
-        \unskip\nobreak\hfill\hbox{\Blacksquare}%
-    \fi
-}
-
-% ==================================================
-% Entorno de Solución
-% ==================================================
-\newenvironment{solucion}{%
-    \par\noindent
-    \begingroup\normalfont
-        \global\@qedusedfalse% reinicia el flag
-        \textcolor{mainc}{\Lato\bfseries\itshape Solución.}%
-        \hspace{0.5em plus 0.2em minus 0.1em}%
-        \ignorespaces
-}{%
-        \if@qedused
-        \else
-            \unskip\nobreak\hfill\hbox{\Square}%
-        \fi
-    \par\endgroup
-}
-
-% ==================================================
-% Entorno de Demostración
-% ==================================================
-\newenvironment{demostracion}{%
-    \par\noindent
-    \begingroup\normalfont
-    \global\@qedusedfalse% reinicia el flag
-    \textcolor{mainc}{\Lato\bfseries\itshape Demostración.}%
-    \hspace{0.5em plus 0.2em minus 0.1em}%
-    \ignorespaces
-}{%
-    \if@qedused
-    \else
-        \unskip\nobreak\hfill\hbox{\Blacksquare}%
-    \fi
-    \par\endgroup
-}
-
-\makeatother
-
+% Delimitadores Paired (mathtools)
+% Uso: \norm{x} (normal), \norm*{x} (auto-resize)
 \DeclarePairedDelimiter\parens{\lparen}{\rparen}
-\DeclarePairedDelimiter\llaves{\{}{\}}
-
+\DeclarePairedDelimiter\set{\lbrace}{\rbrace}
+\DeclarePairedDelimiter\brakets{\lbrack}{\rbrack}
+\DeclarePairedDelimiter{\eva}{.}{\rvert}
 \DeclarePairedDelimiter\abs{\lvert}{\rvert}
 \DeclarePairedDelimiter\norm{\|}{\|}
+\DeclarePairedDelimiterX\ip[2]{\langle}{\rangle}{#1, #2} % Prod. Interior
+\DeclarePairedDelimiterX\dsuces[2]{\lbrace}{\rbrace}{#1, #2}
+\DeclarePairedDelimiterX\paror[2]{\lparen}{\rparen}{#1, #2}
 
-\DeclarePairedDelimiterX\ip[2]{\langle}{\rangle}{#1, #2}
+% Intervalos
+\DeclarePairedDelimiterX\inc[2]{\lbrack}{\rbrack}{#1, #2} % Cerrado
+\DeclarePairedDelimiterX\ino[2]{\lparen}{\rparen}{#1, #2} % Abierto
+\DeclarePairedDelimiterX\inco[2]{\lbrack}{\rparen}{#1, #2} % Cerrado-Abierto
+\DeclarePairedDelimiterX\inoc[2]{\lparen}{\rbrack}{#1, #2} % Abierto-Cerrado
 
-\DeclarePairedDelimiterX\suces[2]{\{}{\}}{#1, #2}
+% ------------------------------------------------------------------------------
+% 6. Macros Lógicas (Argumentos Opcionales y Visuales)
+% ------------------------------------------------------------------------------
 
-\DeclarePairedDelimiterX\paror[2]{(}{)}{#1, #2}
-\newcommand{\dist}{d\paror}
-
-\DeclarePairedDelimiterX\metAux[2]{(}{)}{#1, #2}
-\newcommand{\met}{\rho\metAux}
-
-\NewDocumentCommand{\neada}{ O{n} m }{%
-    ( #2_{1}, #2_{2}, \dots, #2_{#1} )%
+% Función evaluada: f(x)
+% \fev{f}{x} -> f(x) | \fev*{f}{\frac{a}{b}} -> f(...) grande
+\NewDocumentCommand{\fev}{ s O{} O{} m }{%
+    f_{#2}^{#3}\IfBooleanTF{#1}{\parens*{#4}}{\parens{#4}}%
 }
+
+% Derivada notación Lagrange: f^(n)(xi)
+\NewDocumentCommand{\fdif}{ s o m g }{%
+    #3\IfValueT{#2}{^{(#2)}}%
+    \IfValueT{#4}{\IfBooleanTF{#1}{\parens*{#4}}{\parens{#4}}}%
+}
+
+% Espacios Lp y Continuos Ck
+% \Lp{a}{b} -> L([a,b])
+\NewDocumentCommand{\Lp}{ s O{} m g }{%
+    \mathcal{L}^{#2}%
+    \IfValueTF{#4}{%
+        \IfBooleanTF{#1}{\parens*{\inc*{#3}{#4}}}{\parens{\inc{#3}{#4}}}%
+    }{%
+        \IfBooleanTF{#1}{\parens*{#3}}{\parens{#3}}%
+    }%
+}
+\NewDocumentCommand{\Cls}{ s O{} m g }{%
+    C^{#2}%
+    \IfValueTF{#4}{%
+        \IfBooleanTF{#1}{\parens*{\inc*{#3}{#4}}}{\parens{\inc{#3}{#4}}}%
+    }{%
+        \IfBooleanTF{#1}{\parens*{#3}}{\parens{#3}}%
+    }%
+}
+
+% Norma general con escalares fuera
+% \normg{x}{k} -> |k| ||x||
+\NewDocumentCommand{\normg}{ s O{} O{} m g }{%
+    \IfValueT{#5}{\IfBooleanTF{#1}{\abs*{#5}}{\abs{#5}}}%
+    \IfBooleanTF{#1}{\norm*{#4}}{\norm{#4}}%
+    _{#2}^{#3}%
+}
+
+% 1. Definimos las herramientas base con mathtools
+%    Esto se encarga del espaciado correcto y el escalado.
+\DeclarePairedDelimiter{\evaVert}{.}{\rvert} % Para f(x)|
+\DeclarePairedDelimiter{\evaBrack}{[}{]}     % Para [f(x)]
+
+% 2. El comando maestro \eval
+% Sintaxis:
+%   \eval              -> f(x)|
+%   \eval* -> \left. f(x) \right| (Auto escala)
+%   \eval[a][b]        -> f(x)|_a^b
+%   \eval<Tamaño>      -> \Tamaño. f(x) \Tamaño| (Escala manual)
+%   \eval+             -> [f(x)] (Modo corchetes)
+%
+\NewDocumentCommand{\eval}{ s t+ d<> O{} O{} m }{%
+    % --- SELECCIÓN DEL DELIMITADOR ---
+    % Si usas \eval+ usa corchetes, si no, usa la barra vertical.
+    \IfBooleanTF{#2}{%
+        \let\myfence\evaBrack
+    }{%
+        \let\myfence\evaVert
+    }%
+    % --- APLICACIÓN DEL TAMAÑO ---
+    \IfBooleanTF{#1}{%
+        % Caso: \eval* (Automático \left \right)
+        \myfence*{#6}%
+    }{%
+        \IfValueTF{#3}{%
+            % Caso: \eval<\Big> (Manual)
+            \myfence[#3]{#6}%
+        }{%
+            % Caso: \eval (Normal)
+            \myfence{#6}%
+        }%
+    }%
+    % --- GESTIÓN DE LÍMITES ROBUSTA ---
+    % Solo escribe el subíndice/superíndice si el argumento no está vacío.
+    \if\relax\detokenize{#4}\relax\else_{#4}\fi%
+    \if\relax\detokenize{#5}\relax\else^{#5}\fi%
+}
+
+% Distancia
+\NewDocumentCommand{\dist}{ s O{} m m }{%
+    d\IfValueT{#2}{_{#2}}\IfBooleanTF{#1}{\paror*{#3}{#4}}{\paror{#3}{#4}}%
+}
+% Métrica
+\NewDocumentCommand{\met}{ s O{} m m }{%
+    \rho\IfValueT{#2}{_{#2}}\IfBooleanTF{#1}{\paror*{#3}{#4}}{\paror{#3}{#4}}%
+}
+% Bola abierta
+\NewDocumentCommand{\ba}{ s O{} m g }{%
+    B\IfValueT{#2}{_{#2}}%
+    \IfValueTF{#4}{\IfBooleanTF{#1}{\paror*{#3}{#4}}{\paror{#3}{#4}}}%
+                  {\IfBooleanTF{#1}{\parens*{#3}}{\parens{#3}}}%
+}
+% Vecindad
+\NewDocumentCommand{\Ve}{ s O{} m g }{%
+    V\IfValueT{#2}{_{#2}}%
+    \IfValueTF{#4}{\IfBooleanTF{#1}{\paror*{#3}{#4}}{\paror{#3}{#4}}}%
+                  {\IfBooleanTF{#1}{\parens*{#3}}{\parens{#3}}}%
+}
+
+% Sucesiones
+\NewDocumentCommand{\seq}{ s O{n \in \NN} O{} m }{%
+    \IfBooleanTF{#1}{\parens*{#4}_{#2}^{#3}}{\parens{#4}_{#2}^{#3}}%
+}
+
+% Definición formal de función (Mapeo)
+% \Funcion[x][y]{f}{A}{B}
+\NewDocumentCommand{\Funcion}{ o o m m m }{%
+    \begingroup%
+        \displaystyle #3 \colon%
+        \begin{array}[t]{@{\hskip-2.4pt}r@{\hskip2.2pt}c@{\hskip2.2pt}l@{}}%
+            #4 & \to & #5%
+            \IfValueT{#1}{\IfValueT{#2}{\\[-1.725mm]\scriptstyle #1 & \scriptstyle\mapsto & \scriptstyle #2}}%
+        \end{array}%
+    \endgroup%
+}
+
+% Atajos / Sugar Syntax
+\NewDocumentCommand{\tupla}{ s O{n} m }{%
+    \IfBooleanTF{#1}{\parens*{#3_{1}, \dots, #3_{#2}}}{\parens{#3_{1}, \dots, #3_{#2}}}%
+}
+\NewDocumentCommand{\parti}{ O{n} O{a} O{b} m }{%
+    #2 \le #4_0 < \dots < #4_{#1} \le #3%
+}
+\NewDocumentCommand{\suces}{ s O{n} m }{%
+    \set{#3_{1}, \dots, #3_{#2}, \dots}%
+}
+\NewDocumentCommand{\sucesc}{ s O{n} m }{%
+    \set{#3_{1}, \dots, #3_{#2}, \dots, 0, 0, \dots}%
+}
+
+% Matrices
+\newcommand{\pmat}[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand{\bmat}[1]{\begin{bmatrix}#1\end{bmatrix}}
+
+% Derivada Leibniz estándar
+\NewDocumentCommand{\der}{ O{} m m }{%
+    \dfrac{d\IfValueT{#1}{^{#1}} #2}{d #3\IfValueT{#1}{^{#1}}}%
+}
+
+% ------------------------------------------------------------------------------
+% 7. Comandos Avanzados (L3 Layer) - Factories e Inteligencia
+% ------------------------------------------------------------------------------
+\ExplSyntaxOn
+
+% --- FACTORY 1: Operadores de Acumulación (Sumas, Productos) ---
+% Genera comandos que soportan * (display), smashing y límites.
+\NewDocumentCommand{\CreateOperator}{m m}{%
+    \NewDocumentCommand{#1}{s d() O{} O{} m}{%
+        \IfBooleanTF{##1}%
+        {% Caso Display (*): Comprueba si hay smash (l,r,lr)
+         \IfNoValueTF{##2}{\displaystyle#2\limits\sb{##3}\sp{##4}{##5}}%
+                          {\displaystyle\smashoperator[##2]{#2\limits\sb{##3}\sp{##4}}{##5}}}%
+        {% Caso Inline:
+         #2\sb{##3}\sp{##4}{##5}}%
+    }%
+}
+\CreateOperator{\dsum}{\sum}
+\CreateOperator{\dprod}{\prod}
+\CreateOperator{\dcup}{\bigcup}
+\CreateOperator{\dcap}{\bigcap}
+
+% --- FACTORY 2: Operadores Log-like (Límites, Supremos) ---
+% Diferencia: No encapsulan el término final en {}.
+\NewDocumentCommand{\CreateOperatorLog}{m m}{%
+    \NewDocumentCommand{#1}{s d() O{} O{}}{%
+        \IfBooleanTF{##1}%
+        {\IfNoValueTF{##2}{\displaystyle #2\limits_{##3}^{##4}}%
+                          {\displaystyle\smashoperator[##2]{#2\limits_{##3}^{##4}}}}%
+        {#2_{##3}^{##4}}%
+    }%
+}
+\CreateOperatorLog{\dmax}{\max}
+\CreateOperatorLog{\dmin}{\min}
+\CreateOperatorLog{\dinf}{\inf}
+\CreateOperatorLog{\dsup}{\sup}
+\CreateOperatorLog{\dlim}{\lim}
+
+% --- COMANDO: Derivada Parcial (\derpa) ---
+% Detecta si el denominador ya incluye \partial para no duplicarlo.
+\NewDocumentCommand{\derpa}{ O{} m m }{%
+    \tl_if_in:nnTF { #3 } { \partial }
+    { \dfrac{ \partial\IfValueT{#1}{^{#1}} #2 }{ #3 } } % Manual
+    { \dfrac{ \partial\IfValueT{#1}{^{#1}} #2 }{ \partial #3\IfValueT{#1}{^{#1}} } } % Auto
+}
+
+% --- COMANDO: Integral (\dint) ---
+% Mapea abreviaciones (i, ii, oi) a símbolos reales y gestiona diferenciales.
+
+% 1. Definición del Cluster (Mapa)
+\prop_new:N \g_disquisitio_int_map_prop
+\prop_gput:Nnn \g_disquisitio_int_map_prop {i}    {\int}
+\prop_gput:Nnn \g_disquisitio_int_map_prop {ii}   {\iint}
+\prop_gput:Nnn \g_disquisitio_int_map_prop {iii}  {\iiint}
+\prop_gput:Nnn \g_disquisitio_int_map_prop {iiii} {\iiiint}
+\prop_gput:Nnn \g_disquisitio_int_map_prop {oi}   {\oint}
+\prop_gput:Nnn \g_disquisitio_int_map_prop {oii}  {\oiint}
+\prop_gput:Nnn \g_disquisitio_int_map_prop {oiii} {\oiiint}
+
+% 2. Mensaje de Error
+\msg_new:nnn { Disquisitio } { invalid-integral-type }{
+    The~integral~type~'#1'~is~invalid.\\ Valid~options~are:~i,~ii,~iii,~iiii,~oi,~oii,~oiii.
+}
+
+% 3. Implementación
+% Sintaxis: \dint*+<tipo>[inf][sup]{integrando}{diferenciales}
+\NewDocumentCommand{\dint}{ s t+ D<>{i} O{} O{} m g }{%
+    \IfBooleanT{#1}{ \displaystyle }%
+    % Selección de Símbolo
+    \prop_get:NnNTF \g_disquisitio_int_map_prop { #3 } \l_tmpa_tl
+    { \l_tmpa_tl }
+    { \msg_error:nnn { Disquisitio }{ invalid-integral-type }{ #3 } \int }
+    % Límites
+    \IfBooleanTF{#2}{\limits}{\nolimits}%
+    \IfValueT{#4}{\sb{#4}}%
+    \IfValueT{#5}{\sp{#5}}%
+    % Integrando
+    #6%
+    % Diferenciales (Lista separada por comas -> agrega \, automáticamente)
+    \IfValueT{#7}{ \clist_map_inline:nn { #7 } { \, ##1 } }%
+}
+\ExplSyntaxOff
+
+% ------------------------------------------------------------------------------
+% 8. Entornos de Ecuación con Texto
+% ------------------------------------------------------------------------------
+\NewDocumentEnvironment{eqtext}{ m b }{
+    \begin{flalign}
+        \textnormal{#1} && #2 &&
+    \end{flalign}
+}{}
+
+\NewDocumentEnvironment{eqtext*}{ m b }{
+    \begin{flalign*}
+        \textnormal{#1} && #2 &&
+    \end{flalign*}
+}{}
+
+% --- Herramientas Matemáticas y Formato ---
+
+% Operadores Matemáticos Generales
+\DeclareMathOperator{\ext}{ext}
+\DeclareMathOperator{\res}{res}
+
+% Definiciones Estructurales (Teoremas/Definiciones)
+% Nota: Si estas definiciones son estrictamente físicas, muévelas a 14-Physics.
+% Si son definiciones matemáticas generales, déjalas aquí.
+\newtheorem*{defpri}{Definición \textnormal{\textsc{I}}}
+\newtheorem*{defseg}{Definición \textnormal{\textsc{II}}}
+\newtheorem*{defcua}{Definición \textnormal{\textsc{IV}}}
+
+% Comandos de Formato y Auxiliares
+\newcommand{\romano}[1]{\textit{\bfseries\color{mainc}#1)}}
+
+\RequirePackage{siunitx}
+
+\sisetup{
+    output-decimal-marker = {.}, % Decimales con punto
+    group-separator = {,},       % Separador de miles con coma
+    group-minimum-digits = 3,    % Agrupa desde 1,000
+    group-digits = integer,      % Fuerza a solo agrupar enteros
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}},
+    sticky-per = true,
+    print-unity-mantissa = false,
+    print-complex-unity = true
+}
+
+\endinput

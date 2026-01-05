@@ -2,6 +2,7 @@
 \ProvidesClass{Disquisitio_Elementalis_Articles}[2025/02/16 Clase personalizada basada en 'extarticle' para LuaLaTeX]
 
 \RequirePackage{expl3}
+\RequirePackage{xstring}
 
 \LoadClass[twoside,9pt]{extarticle}
 
@@ -16,6 +17,7 @@
 \RequirePackage{ifthen}          % Proporciona sentencias condicionales.
 \RequirePackage{etoolbox}        % Herramientas avanzadas de programación para LaTeX.
 \RequirePackage{xparse}          % Análisis avanzado de argumentos para macros.
+\RequirePackage{xpatch}
 \RequirePackage{calc}            % Notación infija para aritmética.
 \RequirePackage{silence}         % Suprimir advertencias específicas.
     \WarningsOff[blindtext]      % Ejemplo: Suprimir advertencias del paquete blindtext.
@@ -26,12 +28,14 @@
 % Figuras, Imágenes y Cajas de Color
 % --------------------------------------------------------
 \RequirePackage{graphicx}                          % Para incluir y manipular imágenes.
+    \graphicspath{{Images/}}
 \RequirePackage{caption}                           % Personalización de títulos de flotantes (figuras, tablas).
 \RequirePackage{chngcntr}
 \RequirePackage{subcaption}                        % Subfiguras y subtítulos.
 \RequirePackage{floatrow}                          % Personalización avanzada del layout de flotantes.
 \RequirePackage[section]{placeins}                 % Evita que los flotantes traspasen las barreras de sección.
 \RequirePackage[dvipsnames,svgnames,table]{xcolor} % Soporte extendido para colores.
+\RequirePackage{footmisc}
     
 \RequirePackage[framemethod=TikZ]{mdframed}        % Cajas enmarcadas personalizables.
 \RequirePackage[most]{tcolorbox}                   % Cajas de colores y resaltadas muy potentes.
@@ -48,8 +52,6 @@
 \RequirePackage{lipsum}
 
 \RequirePackage{titlesec}
-
-\RequirePackage{hyperref}
 
 % --------------------------------------------------------
 % Gráficos Vectoriales con TikZ y PGFPlots
@@ -68,6 +70,8 @@
     \usetikzlibrary{intersections, decorations.pathreplacing, decorations.markings, decorations}
     \usetikzlibrary{matrix, 3d, patterns, angles, quotes, math}
     \usetikzlibrary{pgfplots.fillbetween}
+
+\RequirePackage{tikz-cd}
 
 \RequirePackage{ragged2e}
 
@@ -91,6 +95,7 @@
 \PassOptionsToPackage{warnings-off={mathtools-colon,mathtools-overbracket}}{unicode-math}
 \RequirePackage{amsmath,amssymb,amsthm} % Símbolos matemáticos extendidos (AMS), carga amsfonts.
 \RequirePackage{mathtools}
+\RequirePackage{fontawesome5}
 \RequirePackage{cancel}                 % Para tachar expresiones matemáticas.
 \RequirePackage{bm}                     % Símbolos en negrita.
 \RequirePackage{thmtools}               % Herramientas para entornos de teoremas.
@@ -106,6 +111,8 @@
     backend=biber,
     style=nature,
 ]{biblatex}
+
+\RequirePackage{hyperref}
 
 % --------------------------------------------------------
 % Paquetes personalizados.

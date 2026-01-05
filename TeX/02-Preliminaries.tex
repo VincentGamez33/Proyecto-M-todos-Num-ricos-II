@@ -1,125 +1,259 @@
-\section{Preliminares}\label{sec:02-pre}
+\section{Preliminares}\label{section:02-pre}
 
-\subsection{Interpolación de Lagrange}
-\lipsum[1]\cite{Burden}
+\subsection{Interpolación Polinómica de Lagrange}
+
+El problema de la interpolación polinómica consiste en determinar una función dentro de un espacio vectorial de dimensión finita que coincida con un conjunto discreto de valores prescritos \cite{Burden}.
+
+Comenzamos estableciendo la existencia y unicidad de la solución para el caso polinomial.
+
+\begin{theorem}{Existencia y Unicidad del Polinomio Interpolador}{existencia_lagrange}
+    Sean $x_0, x_1, \ldots, x_n$, $n+1$ números reales distintos y $y_0, y_1, \ldots, y_n$ un conjunto de valores asociados. Existe un único polinomio $P_n(x)$ de grado a lo más $n$ (perteneciente al espacio $\mathcal{P}_n$) tal que satisface las condiciones de interpolación:
+    \[ P_n(x_i) = y_i, \quad \forall i \in \set{0, 1, \ldots, n}. \]
+\end{theorem}
+
+Para expresar este polinomio de forma directa, utilizamos la fórmula de Lagrange:
+
 \begin{definition}{}{lagrange_polynomials}
-    Sean $x_0, x_1, \ldots, x_n$, $n + 1$ números distintos y $f$ es una función cuyos valores están dados por estos números. Entonces el único polinomio $P(x)$ de grado a lo más $n$ existe, tal que
-    \[ f(x_j) = P(x_j), \quad \text{para toda } j\in\{0,1,\ldots,n\}. \]
-    Dicho polinomio está dado por
+    El polinomio interpolador único $P_n(x)$ puede expresarse como una combinación lineal de los polinomios base de Lagrange $L_{n,k}(x)$:
     \begin{equation}
-        P(x) = f(x_0)L_{n,0}(x) + f(x_1)L_{n,1}(x) + \cdots + f(x_j)L_{n,n}(x) = \sum_{j=0}^n f(x_j)L_{n,j}(x)
+        P_n(x) = \dsum*[k=0][n]{f(x_k)L_{n,k}(x)},\label{eq:01-Lagrange-def}
     \end{equation}
-    donde, para toda $j \in \{0,1,\ldots,n\}$, se cumple
-    \[ L_{n,j}(x) = \frac{(x-x_0)(x-x_1)\cdots(x-x_{j-1})(x-x_{j+1})\cdots(x-x_n)}{(x_j-x_0)(x_j-x_1)\cdots(x_j-x_{j-1})(x_j-x_{j+1})\cdots(x_j - x_n)}, \]
-    o bien,
+    donde cada función base $L_{n,k}(x)$ se define mediante el producto:
     \begin{equation}
-        L_{n,j}(x) = \prod_{\substack{k = 0\\k \neq j}}^n \frac{(x - x_k)}{(x_j - x_k)}.
+        L_{n,k}(x) = \dprod[\substack{j=0\\j \neq k}][n]{\frac{x - x_j}{x_k - x_j}}.\label{eq:02}
     \end{equation}
+    Nótese que esta base satisface la propiedad de delta de Kronecker: $L_{n,k}(x_i) = \delta_{ki}$.
 \end{definition}
-% \begin{definition}{}{Lagrange_polynomials}
-%     Si $x_0, x_1, \ldots, x_n$ son $n + 1$ números distintos y $f$ es una función cuyos valores están dados por estos números. Entonces el único polinomio $P(x)$ de grado a lo más $n$ existe, tal que
-%     \[ f(x_k) = P(x_k), \quad \text{para cada } k\in\{0,1,\ldots,n\}. \]
-%     Dicho polinomio está dado por
-%     \begin{equation}
-%         P(x) = f(x_0)L_{n,0}(x) + f(x_1)L_{n,1}(x) + \cdots + f(x_n)L_{n,n}(x) = \sum_{j=0}^n f(x_j)L_{n,j}(x)
-%     \end{equation}
-%     donde, para cada $j\in\{0,1,\ldots,n\}$, se cumple
-%     \[ L_{n,j}(x) = \frac{(x-x_0)(x-x_1)\cdots(x-x_{j-1})(x-x_{j+1})\cdots(x-x_n)}{(x_j-x_0)(x_j-x_1)\cdots(x_j-x_{j-1})(x_j-x_{j+1})\cdots(x_j - x_n)}, \]
-%     o bien,
-%     \begin{equation}
-%         L_{n,j}(x) = \prod_{\substack{k = 0\\k \neq j}}^n \frac{(x - x_k)}{(x_j - x_k)}.
-%     \end{equation}
-% \end{definition}
 
-\lipsum[3-5]
-\begin{code}[Implementación de los Polinomios de Lagrange en Python.]
-    \inputminted{python}{Code/Python/02-Interpolacion/interpolacion_Lagrange.py}
-\end{code}
+La precisión de esta aproximación depende de las propiedades analíticas de la función generadora $f$ y de la distribución de los nodos $x_i$ \cite{Burden}.
+
+\begin{theorem}{Resto de la Interpolación de Lagrange}{error_lagrange}
+    Sea $f \in \Cls[n+1]{a}{b}$ y sean $x_0, \ldots, x_n$ nodos distintos en $\inc{a}{b}$. Para cualquier $x \in \inc{a}{b}$, existe un número $\xi(x) \in \ino{a}{b}$ tal que el error de interpolación viene dado por:
+    \begin{equation}
+        f(x) - P_n(x) = \frac{\fdif[n+1]{f}{\xi(x)}}{(n+1)!} \dprod*[i=0][n]{(x - x_i)}.
+    \end{equation}
+\end{theorem}
+
+\begin{observation}{Comportamiento Asintótico del Error}{obs_runge_theory}
+    La ecuación del teorema anterior pone de manifiesto que la convergencia uniforme de $P_n(x)$ hacia $f(x)$ cuando $n \to \infty$ no está garantizada para cualquier elección de nodos (Fenómeno de Runge).
+\end{observation}
+
+A efectos de validación computacional, se desarrolló un algoritmo que construye explícitamente los polinomios base $L_{n,j}(x)$. Esta implementación se detalla en el \refcode{lagrange} del \refapx{codes}.
+
+\subsection{Splines Cúbicos}
+
+A diferencia de la interpolación global de Lagrange, los \textbf{Splines} cúbicos construyen la aproximación mediante polinomios de tercer grado definidos por tramos \cite{Burden}, garantizando suavidad global.
+
+\begin{definition}{Spline Cúbico}{def_spline}
+    Dada una partición del intervalo $\inc{a}{b}$, una función $S(x)$ se denomina Spline Cúbico si coincide con un polinomio cúbico en cada subintervalo, interpola los datos y es de clase $\Cls[2]{a}{b}$.
+\end{definition}
+
+Para determinar los coeficientes, se imponen condiciones de frontera.
+
+\begin{definition}{Spline Cúbico Natural}{def_natural_spline}
+    Un Spline Cúbico se dice \textbf{Natural} si satisface las condiciones de curvatura nula en los extremos: $S''(x_0) = 0$ y $S''(x_n) = 0$.
+\end{definition}
+
+\begin{theorem}{Existencia y Unicidad del Spline Cúbico}{thm_spline_existence}
+    Dados $n+1$ puntos distintos, existe un único Spline Cúbico Natural $S(x)$ que interpola dichos datos, obtenido al resolver un sistema tridiagonal estrictamente diagonal dominante \cite{Burden}.
+\end{theorem}
+
+El algoritmo implementado para la construcción y evaluación de los Splines Cúbicos, fundamental para evitar distorsiones en el modelado de homicidios, se presenta en el \refcode{spline} del \refapx{codes}.
 
 \subsection{Diferenciación Numérica}
-\lipsum[6-8]
-\begin{code}[Implementación de la Aproximación de la Derivada en Python.]
-    \inputminted{python}{Code/Python/03-Diferenciacion/derivacion_numerica.py}
-\end{code}
+
+Para estimar la velocidad de cambio, utilizamos métodos de diferencias finitas de alto orden \cite{Burden}.
+
+\begin{proposition}{Derivada Centrada de 5 Puntos}{diff5}
+    Sea $f \in \Cls[5]{a}{b}$. La derivada se aproxima mediante:
+    \[ \fdif{f}{x} = \frac{f(x-2h) - 8f(x-h) + 8f(x+h) - f(x+2h)}{12h} + O(h^4). \]
+\end{proposition}
+
+Para validar la robustez numérica, definimos métricas de error absoluto, normalizado (para verificar el orden de convergencia) y relativo. La implementación computacional de estos esquemas se encuentra en el \refcode{diff} del \refapx{codes}.
 
 \subsection{Integración Numérica}
-\lipsum[9]
+
+La integración numérica permite evaluar el impacto total acumulado sustituyendo $f(x)$ por un polinomio interpolador.
+
+% =========================================
 % =========================================
 % Teorema para analizar el error
 % =========================================
 \begin{theorem}{}{TdE}
-    Dada una función $f \in C^{n+1}([a,b])$ y $a \le x_0 < x_1 < x_2 < \cdots < x_n \le b$, $n+1$ números distintos. Entonces para toda $x \in [a,b]$ existe un número $\xi_x \in (a,b)$, de tal forma que
-    \[ f(x) = P_n(x) + \frac{f^{n+1}(\xi_x)}{(n+1!)} \prod_{j=0}^n (x - x_j) \]
-    donde $\displaystyle P_n(x) = \sum_{j=0}^n f(x_j)L_{n,j}(x)$ y $\displaystyle L_{n,j}(x) = \prod_{\substack{k = 0\\k \neq j}}^n \frac{(x - x_k)}{(x_j - x_k)}$.
+    Dada una función $f \in \Cls[n+1]{a}{b}$ y $\parti{x}$, $n+1$ números distintos. Entonces para toda $x \in \inc{a}{b}$ existe un número $\xi_x \in \ino{a}{b}$, de tal forma que
+    \[ f(x) = P_n(x) + \frac{\fdif[n+1]{f}{\xi_x}}{(n+1)!} \dprod[j=0][n]{(x - x_j)} \]
+    donde $P_n(x) = \dsum*[j=0][n]{f(x_j)L_{n,j}(x)}$ y $L_{n,j}(x) = \dprod*[\substack{k = 0\\k \neq j}][n]{\frac{(x - x_k)}{(x_j - x_k)}}$.
 \end{theorem}
 % =========================================
 % Teorema del Valor Medio Ponderado (con peso) para integrales
 % =========================================
 \begin{theorem}{}{TVMWI}
-    Dada una función $f \in C([a,b])$ y dada $g:[a,b] \to \RR[+][0]$ tal que $g(x) \ge 0$ para toda $x \in [a,b]$ una función integrable. Entonces existe $c \in [a,b]$ de tal forma que
-    \[ \int_a^b f(x)g(x)\,dx = f(c)\int_a^b g(x)\,dx \]
+    Dada una función $f \in \Cls[2]{a}{b}$ y dada $\Funcion{g}{\inc{a}{b}}{\RR[+]}$ tal que $g(x) \ge 0$ para toda $x \in \inc{a}{b}$ una función integrable. Entonces existe $c \in \inc{a}{b}$ de tal forma que
+    \[ \dint[a][b]{f(x)g(x)}{dx} = f(c)\dint[a][b]{g(x)}{dx} \]
 \end{theorem}
-\lipsum[10]
+A continuación, deducimos las fórmulas de Newton-Cotes cerradas, comenzando por la aproximación más elemental mediante un polinomio de grado cero.
+
+% =========================================
+% Deducción de la Regla del Rectángulo (Riemann)
+% =========================================
+\begin{theorem}{Regla del Rectángulo}{DRR}
+    Dada una función $f \in \Cls[1]{a}{b}$. Sea $x_0 < x_1$ tal que $h = x_1 - x_0$. Demostrar que la Regla del Rectángulo (Suma de Riemann por la izquierda) está dada por
+    \[ \dint[x_0][x_1]{f(x)}{dx} = h f(x_0) + \frac{h^2\,\fdif{f}{\xi}}{2}, \]
+    donde $\xi \in (x_0, x_1)$.
+    \begin{demostracion}
+        De acuerdo con el \refthm{TdE} y la \refdef{lagrange_polynomials}, para el caso $n=0$, nuestra aproximación para la función $f(x)$ es de la forma
+        \begin{equation}\label{eq:riemann-approx}
+            f(x) = f(x_0)L_{0,0}(x) + E_0(x)
+        \end{equation}
+        donde el único polinomio base es constante (producto vacío):
+        \begin{equation}\label{eq:L00}
+            L_{0,0}(x) = 1,
+        \end{equation}
+        y por el \refthm{TdE}, el término de error es:
+        \begin{equation}\label{eq:E0}
+            E_0(x) = \fdif{f}{\xi_x}(x - x_0).
+        \end{equation}
+        Luego, nuestra aproximación a la integral definida en el intervalo $\inc{x_0}{x_1}$ es de la forma
+        \[ \dint[x_0][x_1]{f(x)}{dx} = f(x_0)\dint[x_0][x_1]{L_{0,0}(x)}{dx} + \dint[x_0][x_1]{E_0(x)}{dx}. \]
+        Sustituyendo a la \refeqn{L00} e integrando el polinomio base, obtenemos directamente la longitud del intervalo:
+        \[ \dint[x_0][x_1]{L_{0,0}(x)}{dx} = \dint[x_0][x_1]{1}{dx} = x \Big|_{x_0}^{x_1} = x_1 - x_0 = h. \]
+        Sustituyendo lo anterior en la ecuación de la integral tenemos
+        \begin{equation}\label{eq:riemann-intermedia}
+            \dint[x_0][x_1]{f(x)}{dx} = h f(x_0) + \dint[x_0][x_1]{E_0(x)}{dx}.
+        \end{equation}
+        Ahora, analizaremos el error. De la \refeqn{E0} se sigue
+        \[ \dint[x_0][x_1]{E_0(x)}{dx} = \dint[x_0][x_1]{\fdif{f}{\xi_x}(x - x_0)}{dx}. \]
+        Por el \refthm{TVMWI}, sean $f(x) = \fdif{f}{\xi_x}$ y $g(x) = (x - x_0)$. Dado que $x \ge x_0$ en el intervalo de integración, $g(x) \ge 0$. Entonces existe $\xi \in \ino{x_0}{x_1}$ tal que
+        \begin{equation}\label{eq:error-riemann-integ}
+            \dint[x_0][x_1]{E_0(x)}{dx} = \fdif{f}{\xi}\dint[x_0][x_1]{(x - x_0)}{dx}.
+        \end{equation}
+        
+        Resolvemos la integral restante de forma directa:
+        \[ \dint[x_0][x_1]{(x - x_0)}{dx} = \frac{(x - x_0)^2}{2} \Bigg|_{x_0}^{x_1} = \frac{(x_1 - x_0)^2}{2} - 0 = \frac{h^2}{2}. \]
+        Sustituyendo el valor de la integral en la \refeqn{error-riemann-integ}, obtenemos
+        \[ \dint[x_0][x_1]{E_0(x)}{dx} = \frac{h^2}{2}\fdif{f}{\xi}. \]
+        Finalmente, sustituyendo este resultado en la \refeqn{riemann-intermedia}:
+        \[ \dint[x_0][x_1]{f(x)}{dx} = h f(x_0) + \frac{h^2}{2}\fdif{f}{\xi}. \]
+        Por lo tanto, queda demostrada la \textbf{Regla del Rectángulo}. \QEDblack
+    \end{demostracion}
+\end{theorem}
+Si bien la aproximación rectangular es intuitiva, su error global converge lentamente. Para mejorar la precisión, aumentamos el grado del polinomio interpolador a $n=1$, obteniendo una aproximación lineal conocida como la Regla Trapezoidal.
 % =========================================
 % Deducción de la Regla Trapezoidal
 % =========================================
-\begin{theorem}{}{}
-    Dada una función $f \in C^2([a,b])$. Sea $x_0 < x_1$ tal que $x_0 = a$ y $x_1 = a + h = b$ donde $h=x_1-x_0$. Demostrar que la Regla Trapezoidal está dada por
-    \[ \int_{x_0}^{x_1} f(x)\,dx = \frac{h}{2}[f(x_0) + f(x_1)] - \frac{h^3\,f^{(2)}(\xi_c)}{12}. \]
+\begin{theorem}{}{DRT}
+    Dada una función $f \in \Cls{a}{b}$. Sea $x_0 < x_1$ tal que $x_0 = a$ y $x_1 = a + h = b$ donde $h=x_1-x_0$. Demostrar que la Regla Trapezoidal está dada por
+    \[ \dint[x_0][x_1]{f(x)}{dx} = \frac{h}{2}[f(x_0) + f(x_1)] - \frac{h^3\,\fdif[2]{f}{\xi_c}}{12}. \]
+    \begin{demostracion}
+        De acuerdo con el \refthm{TdE} y la \refdef{lagrange_polynomials} nuestra aproximación para la función $f(x)$ es de la forma
+        \begin{equation}\label{eq:03-fx}
+            f(x) = f(x_0)L_{1,0}(x) + f(x_1)L_{1,1}(x) + E_1(x)
+        \end{equation}
+        donde
+        \begin{align}
+            L_{1,0}(x) &= \frac{x - x_1}{x_0 - x_1} = -\frac{x - x_1}{h}, \label{eq:04-L10} \\
+            L_{1,1}(x) &= \frac{x - x_0}{x_1 - x_0} = \frac{x - x_0}{h}, \label{eq:05-L11}
+            \intertext{y por el \refthm{TdE}}
+            E_1(x) &= \dfrac{\fdif[2]{f}{\xi_x}}{2}(x - x_0)(x - x_1)
+        \end{align}
+        ---$E_1(x)$ es el término de error---. Luego, nuestra aproximación a la integral definida de $a$ a $b$ es de la forma
+        \[ \dint[a][b]{f(x)}{dx} = \dint[a][b]{[f(x_0)L_{1,0}(x) + f(x_1)L_{1,1}(x)]}{dx} + \dint[a][b]{E_1(x)}{dx}, \]
+        \begin{eqtext*}{o bien,}
+            \dint[a][b]{f(x)}{dx} = f(x_0)\dint[a][b]{ L_{1,0}(x)}{dx} + f(x_1)\dint[a][b]{ L_{1,1}(x)}{dx} + \dint[a][b]{E_1(x)}{dx}.
+        \end{eqtext*}
+        Por hipótesis sabemos que $a = x_0$ y $b = x_1$, obteniendo
+        \begin{equation}\label{eq:06-int}
+            \dint[x_0][x_1]{f(x)}{dx} = f(x_0)\dint[x_0][x_1]{L_{1,0}(x)}{dx} + f(x_1)\dint[x_0][x_1]{L_{1,1}(x)}{dx} + \dint[x_0][x_1]{E_1(x)}{dx}.
+        \end{equation}
+        Ahora, sustituyendo a las \refeqn{04-L10,05-L11} e integrando por separado a $L_{1,0}(x)$ y $L_{1,1}(x)$. Se sigue para $L_{1,0}(x)$
+        \[ \dint[x_0][x_1]{L_{1,0}(x)}{dx} = \int_{x_0}^{x_1}\frac{x - x_1}{h} = -\frac{1}{2h}(x - x_1)^2 \Big|_{x_0}^{x_1} = -\frac{(x_0 - x_1)^2}{2h} = \frac{(x_1 - x_0)^2}{2h} = \frac{h^2}{2h} = \frac{h}{2}. \]
+        Análogamente, para $L_{1,1}(x)$ hacemos
+        \[ \dint[x_0][x_1]{L_{1,1}(x)}{dx} = \dint[x_0][x_1]{\frac{x - x_0}{h}}{dx} = \frac{1}{2h} (x - x_0)^2\Big|_{x_0}^{x_1} = \frac{(x_1 - x_0)^2}{2h} = \frac{h^2}{2h} = \frac{h}{2}. \]
+        Sustituyendo lo anterior en la \refeqn{06-int} tenemos
+        \[ \dint[x_0][x_1]{f(x)}{dx} = f(x_0)\frac{h}{2} + f(x_1)\frac{h}{2} + \dint[x_0][x_1]{E_1(x)}{dx}, \]
+        \begin{eqtext}{o bien,}
+            \dint[x_0][x_1]{f(x)}{dx} = \frac{h}{2}[f(x_0) + f(x_1)] + \dint[x_0][x_1]{E_1(x)}{dx}. \label{eq:07-analisis-error}
+        \end{eqtext}
+        Ahora, analizaremos el error. De la \refeqn{07-analisis-error} se sigue
+        \[ \dint[x_0][x_1]{E_1(x)}{dx} = \dint[x_0][x_1]{\frac{\fdif[2]{f}{(\xi_x)}}{2}(x - x_0)(x - x_1)}{dx} \]
+        Por el \refthm{TVMWI}, sean $f(x) = \dfrac{f^{(2)}(\xi_x)}{2}$ y $g(x) = (x - x_0)(x - x_1)$. Entonces existe $c \in \inc{a}{b}$ de tal forma que $\xi_c \in \ino{a}{b}$. Esto es
+        \begin{equation}\label{eq:08-ahhhh}
+            \dint[x_0][x_1]{E_1(x)}{dx} = \frac{\fdif[2]{f}{\xi_c}}{2}\dint[x_0][x_1]{(x - x_0)(x - x_1)}{dx}.
+        \end{equation}
+        Ahora bien, para resolver la integral, procederemos integrando por partes. Sean $u = x - x_0$ y $dv = (x - x_1){dx}$, entonces $du = dx$ y $v = \dfrac{(x - x_1)^2}{2}$. Integrando
+        \[ \dint[x_0][x_1]{(x - x_0)(x - x_1)}{dx} = (x - x_0)\frac{(x - x_1)^2}{2}\Bigg|_{x_0}^{x_1} - \frac{1}{2}\dint[x_0][x_1]{(x - x_1)^2}{dx} \]
+        Al evaluar el primer término en cada límite, el resultado es 0 en ambos casos. Así,
+        \[ \dint[x_0][x_1]{(x - x_0)(x - x_1)}{dx} = -\frac{1}{2 \cdot 3}(x - x_1)^3\Big|_{x_0}^{x_1} = -\frac{1}{6} \left(0 - (x_0 - x_1)^3\right) = -\frac{(x_1 - x_0)^3}{6} = -\frac{h^3}{6}. \]
+        Sustituyendo el valor de la integral en la \refeqn{08-ahhhh}, obtenemos
+        \[ \dint[x_0][x_1]{E_1(x)}{dx} = -\frac{\fdif[2]{f}{\xi_c}}{2}\cdot\frac{h^3}{6}, \]
+        \begin{eqtext}{o bien,}
+            \dint[x_0][x_1]{E_1(x)}{dx} = -\frac{h^3\,\fdif[2]{f}{\xi_c}}{12}. \label{eq:09-ahhhhhhhhh}
+        \end{eqtext}
+        Finalmente, sustituyendo la \refeqn{09-ahhhhhhhhh} en la \refeqn{07-analisis-error}
+        \begin{equation}
+            \dint[x_0][x_1]{f(x)}{dx} = \frac{h}{2}[f(x_0) + f(x_1)] - \frac{h^3\,\fdif[2]{f}{\xi_c}}{12}.
+        \end{equation}
+        Por lo tanto, queda demostrado que la \textbf{Regla Trapezoidal} es de la forma
+        \[ \dint[x_0][x_1]{f(x)}{dx} = \frac{h}{2}[f(x_0) + f(x_1)] - \frac{h^3\,\fdif[2]{f}{\xi_c}}{12}. \QEDblack \]
+    \end{demostracion}
 \end{theorem}
-\begin{demostracion}
-    De acuerdo con el \refthm{TdE} y la \refdef{lagrange_polynomials} nuestra aproximación para la función $f(x)$ es de la forma
-    \begin{equation}\label{eq:03-fx}
-        f(x) = f(x_0)L_{1,0}(x) + f(x_1)L_{1,1}(x) + E_1(x)
-    \end{equation}
-    donde
-    \begin{align}
-        L_{1,0}(x) &= \frac{x - x_1}{x_0 - x_1} = -\frac{x - x_1}{h}, \label{eq:04-L10} \\
-        L_{1,1}(x) &= \frac{x - x_0}{x_1 - x_0} = \frac{x - x_0}{h}, \label{eq:05-L11}
-        \intertext{y por el \refthm{TdE}}
-        E_1(x) &= \dfrac{f^{(2)}(\xi_x)}{2}(x - x_0)(x - x_1)
-    \end{align}
-    ---$E_1(x)$ es el término de error\footnote{Dicho termino de error será tratado más adelante}---. Luego, nuestra aproximación a la integral definida de $a$ a $b$ es de la forma
-    \[ \int_a^b f(x)\,dx = \int_a^b [f(x_0)L_{1,0}(x) + f(x_1)L_{1,1}(x)]\,dx + \int_a^b E_1(x)\,dx, \]
-    o bien
-    \[ \int_a^b f(x)\,dx = f(x_0)\int_a^b L_{1,0}(x)\,dx + f(x_1)\int_a^b L_{1,1}(x)\,dx + \int_a^b E_1(x)\,dx \]
-    Por hipótesis sabemos que $a = x_0$ y $b = x_1$, obteniendo
-    \begin{equation}\label{eq:06-int}
-        \int_{x_0}^{x_1} f(x)\,dx = f(x_0)\int_{x_0}^{x_1} L_{1,0}(x)\,dx + f(x_1)\int_{x_0}^{x_1} L_{1,1}(x)\,dx + \int_{x_0}^{x_1} E_1(x)\,dx.
-    \end{equation}
-    Ahora, sustituyendo a las \refeqn{04-L10,05-L11} e integrando por separado a $L_{1,0}(x)$ y $L_{1,1}(x)$. Se sigue para $L_{1,0}(x)$
-    \[ \int_{x_0}^{x_1} L_{1,0}(x)\,dx = \int_{x_0}^{x_1}\frac{x - x_1}{h} = -\frac{1}{2h}(x - x_1)^2 \Big|_{x_0}^{x_1} = -\frac{(x_0 - x_1)^2}{2h} = \frac{(x_1 - x_0)^2}{2h} = \frac{h^2}{2h} = \frac{h}{2}. \]
-    Análogamente, para $L_{1,1}(x)$ hacemos
-    \[ \int_{x_0}^{x_1} L_{1,1}(x)\,dx = \int_{x_0}^{x_1} \frac{x - x_0}{h}\,dx = \frac{1}{2h} (x - x_0)^2\Big|_{x_0}^{x_1} = \frac{(x_1 - x_0)^2}{2h} = \frac{h^2}{2h} = \frac{h}{2}. \]
-    Sustituyendo lo anterior en la \refeqn{06-int} tenemos
-    \[ \int_{x_0}^{x_1} f(x)\,dx = f(x_0)\frac{h}{2} + f(x_1)\frac{h}{2} + \int_{x_0}^{x_1} E_1(x)\,dx, \]
-    o bien
-    \begin{equation}\label{eq:07-analisis-error}
-        \int_{x_0}^{x_1} f(x)\,dx = \frac{h}{2}[f(x_0) + f(x_1)] + \int_{x_0}^{x_1} E_1(x)\,dx.
-    \end{equation}
-    Ahora, analizaremos el error. De la \refeqn{07-analisis-error} se sigue
-    \[ \int_{x_0}^{x_1} E_1(x)\,dx = \int_{x_0}^{x_1} \frac{f^{(2)}(\xi_x)}{2}(x - x_0)(x - x_1)\,dx \]
-    Por el \refthm{TVMWI}, sean $f(x) = \dfrac{f^{(2)}(\xi_x)}{2}$ y $g(x) = (x - x_0)(x - x_1)$. Entonces existe $c \in [a,b]$ de tal forma que $\xi_c \in (a,b)$. Esto es
-    \begin{equation}\label{eq:08-ahhhh}
-        \int_{x_0}^{x_1} E_1(x)\,dx = \frac{f^{(2)}(\xi_c)}{2}\int_{x_0}^{x_1} (x - x_0)(x - x_1)\,dx.
-    \end{equation}
-    Ahora bien, para resolver la integral, procederemos integrando por partes. Sean $u = x - x_0$ y $dv = (x - x_1)\,dx$, entonces $du = dx$ y $v = \dfrac{(x - x_1)^2}{2}$. Integrando
-    \[ \int_{x_0}^{x_1} (x - x_0)(x - x_1)\,dx = (x - x_0)\frac{(x - x_1)^2}{2}\Bigg|_{x_0}^{x_1} - \frac{1}{2}\int_{x_0}^{x_1} (x - x_1)^2\,dx \]
-    Al evaluar el primer término en cada límite, el resultado es 0 en ambos casos. Así,
-    \[ \int_{x_0}^{x_1} (x - x_0)(x - x_1)\,dx = -\frac{1}{2 \cdot 3}(x - x_1)^3\Big|_{x_0}^{x_1} = -\frac{1}{6} \left(0 - (x_0 - x_1)^3\right) = -\frac{(x_1 - x_0)^3}{6} = -\frac{h^3}{6}. \]
-    Sustituyendo el valor de la integral en la \refeqn{08-ahhhh}, obtenemos
-    \[ \int_{x_0}^{x_1} E_1(x)\,dx = -\frac{f^{(2)}(\xi_c)}{2}\cdot\frac{h^3}{6}, \]
-    o bien,
-    \begin{equation}\label{eq:09-ahhhhhhhhh}
-        \int_{x_0}^{x_1} E_1(x)\,dx = -\frac{h^3\,f^{(2)}(\xi_c)}{12}.
-    \end{equation}
-    Finalmente, sustituyendo la \refeqn{09-ahhhhhhhhh} en la \refeqn{07-analisis-error}
-    \begin{equation}
-        \int_{x_0}^{x_1} f(x)\,dx = \frac{h}{2}[f(x_0) + f(x_1)] - \frac{h^3\,f^{(2)}(\xi_c)}{12}.
-    \end{equation}
-    Por lo tanto, queda demostrado que la \textbf{Regla Trapezoidal} es de la forma
-    \[ \int_{x_0}^{x_1} f(x)\,dx = \frac{h}{2}[f(x_0) + f(x_1)] - \frac{h^3\,f^{(2)}(\xi_c)}{12}. \QEDblack \]
-\end{demostracion}
-\begin{code}[Implementación de la Aproximación de la Integral de Riemann en Python.]
-    \inputminted{python}{Code/Python/04-Integracion/integracion_numerica.py}
-\end{code}
+Si aumentamos el grado del polinomio interpolador a $n=2$, obtenemos una aproximación cuadrática que captura mejor la curvatura de la función, derivando en la Regla de Simpson.
+% =========================================
+% Deducción de la Regla de Simpson
+% =========================================
+\begin{theorem}{}{DRS}
+    Dada una función $f \in \Cls[4]{a}{b}$. Sean $x_0, x_1, x_2$ tales que $a \le x_0 < x_1 < x_2 \le b$, donde $h = x_1 - x_0 = x_2 - x_1$. Demostrar que la Regla de Simpson está dada por
+    \[ \dint[x_0][x_2]{f(x)}{dx} = \frac{h}{3}[f(x_0) + 4f(x_1) + f(x_2)] - \frac{h^5\,\fdif[4]{f}{\xi}}{90}, \]
+    donde $\xi \in (a,b)$.
+    \begin{demostracion}
+        De acuerdo con el \refthm{TdE} y la \refdef{lagrange_polynomials}, aproximamos la función $f(x)$ en el intervalo $\inc{x_0}{x_2}$ mediante el polinomio interpolador de segundo grado. Nuestra aproximación es de la forma:
+        \begin{equation}\label{eq:10-simp-approx}
+            f(x) = f(x_0)L_{2,0}(x) + f(x_1)L_{2,1}(x) + f(x_2)L_{2,2}(x) + E_2(x),
+        \end{equation}
+        donde los polinomios base $L_{2,k}(x)$ están definidos sobre los nodos $x_0, x_1, x_2$. Integrando la \refeqn{10-simp-approx} en el intervalo de interés:
+        \[ \dint[x_0][x_2]{f(x)}{dx} = f(x_0)\dint[x_0][x_2]{L_{2,0}(x)}{dx} + f(x_1)\dint[x_0][x_2]{L_{2,1}(x)}{dx} + f(x_2)\dint[x_0][x_2]{L_{2,2}(x)}{dx} + \dint[x_0][x_2]{E_2(x)}{dx}. \]
+        
+        Para resolver las integrales de los coeficientes, realizamos el cambio de variable $x = x_1 + th$, con $dx = h\,dt$. Los límites de integración cambian de $\inc{x_0}{x_2}$ a $\inc{-1}{1}$.
+        
+        Evaluando los pesos para cada nodo:
+        \begin{align}
+            \dint[x_0][x_2]{L_{2,0}(x)}{dx} &= h\dint[-1][1]{\frac{t(t-1)}{2}}{dt} = \frac{h}{2}\left[\frac{t^3}{3} - \frac{t^2}{2}\right]_{-1}^{1} = \frac{h}{3}, \label{eq:11-w0} \\
+            \dint[x_0][x_2]{L_{2,1}(x)}{dx} &= h\dint[-1][1]{(1-t^2)}{dt} = h\left[t - \frac{t^3}{3}\right]_{-1}^{1} = \frac{4h}{3}, \label{eq:12-w1} \\
+            \dint[x_0][x_2]{L_{2,2}(x)}{dx} &= h\dint[-1][1]{\frac{t(t+1)}{2}}{dt} = \frac{h}{2}\left[\frac{t^3}{3} + \frac{t^2}{2}\right]_{-1}^{1} = \frac{h}{3}. \label{eq:13-w2}
+        \end{align}
+        Sustituyendo las \refeqn{11-w0,12-w1,13-w2} en la expresión original, obtenemos la parte de la cuadratura:
+        \begin{equation}\label{eq:14-simpson-part}
+            \dint[x_0][x_2]{P_2(x)}{dx} = \frac{h}{3}\big[f(x_0) + 4f(x_1) + f(x_2)\big].
+        \end{equation}
+        
+        Ahora, analizaremos el error. El término del error integrado es:
+        \[ \dint[x_0][x_2]{E_2(x)}{dx} = \dint[x_0][x_2]{ \frac{\fdif[3]{f}{\xi_x}}{3!} (x-x_0)(x-x_1)(x-x_2) }{dx}. \]
+        Utilizando la notación de diferencias divididas, sabemos que $\frac{f^{(3)}(\xi_x)}{3!} = f[x_0, x_1, x_2, x]$. Definimos $\pi(x) = (x-x_0)(x-x_1)(x-x_2)$. Nótese que $\pi(x)$ es una función impar respecto a $x_1$, por lo que cambia de signo en el intervalo y su integral directa es cero.
+        
+        Para resolverlo, definimos una función auxiliar $w(x) = \dint[x_0][x]{\pi(t)}{dt}$ y procedemos integrando por partes. Sean:
+        \[ u = f[x_0, x_1, x_2, x] \quad \implies \quad du = f[x_0, x_1, x_2, x, x]\,dx, \]
+        \[ dv = \pi(x)\,dx \quad \implies \quad v = w(x). \]
+        Entonces, la integral del error se reescribe como:
+        \begin{equation}\label{eq:15-parts}
+            \dint[x_0][x_2]{E_2(x)}{dx} = \Big[ w(x)f[x_0, x_1, x_2, x] \Big]_{x_0}^{x_2} - \dint[x_0][x_2]{w(x) f[x_0, x_1, x_2, x, x]}{dx}.
+        \end{equation}
+        Evaluando los límites de $w(x)$: $w(x_0) = 0$ por definición, y $w(x_2) = \dint[x_0][x_2]{\pi(t)}{dt} = 0$ debido a la simetría impar de $\pi(t)$. Así, el primer término de la \refeqn{15-parts} se anula.
+        
+        Nos queda:
+        \[ \dint[x_0][x_2]{E_2(x)}{dx} = - \dint[x_0][x_2]{ w(x) \frac{\fdif[4]{f}{\eta}}{4!} }{dx}. \]
+        La función $w(x)$ no cambia de signo en $\ino{x_0}{x_2}$ (es siempre negativa). Por el \refthm{TVMWI}, existe $\xi \in \ino{x_0}{x_2}$ tal que podemos extraer la derivada de la integral:
+        \begin{equation}\label{eq:16-mean-val}
+            \dint[x_0][x_2]{E_2(x)}{dx} = - \frac{\fdif[4]{f}{\xi}}{24} \dint[x_0][x_2]{w(x)}{dx}.
+        \end{equation}
+        Calculando la integral de $w(x)$ (haciendo el cambio a $t \in \inc{-1}{1}$) se obtiene el valor $-\frac{4h^5}{15}$. Sustituyendo este valor en la \refeqn{16-mean-val}:
+        \[ \dint[x_0][x_2]{E_2(x)}{dx} = - \frac{\fdif[4]{f}{\xi}}{24} \left( -\frac{4h^5}{15} \right) = - \frac{h^5\,\fdif[4]{f}{\xi}}{90}. \]
+        
+        Finalmente, sumando la cuadratura de la \refeqn{14-simpson-part} con el error calculado:
+        \begin{equation}
+            \dint[x_0][x_2]{f(x)}{dx} = \frac{h}{3}[f(x_0) + 4f(x_1) + f(x_2)] - \frac{h^5\,\fdif[4]{f}{\xi}}{90}.
+        \end{equation}
+        Por lo tanto, queda demostrada la \textbf{Regla de Simpson}.
+    \end{demostracion}
+\end{theorem}
+
+Para cuantificar el impacto total de la violencia y verificar los teoremas de cuadratura, se implementaron los métodos de Riemann, Trapecio y Simpson 1/3. Esta rutina, que permite analizar la convergencia empírica, se detalla en el \refcode{int} del \refapx{codes}.
