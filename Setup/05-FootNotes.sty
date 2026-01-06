@@ -24,3 +24,14 @@
     {{\color{mainc}\verdana\selectfont\@thefnmark}} % El reemplazo (el número estilizado)
     {}{} % Argumentos de éxito/fallo (los dejamos vacíos)
 \makeatother
+
+
+\makeatletter
+\renewcommand{\@makefnmark}{%
+  \hbox{%
+    \@textsuperscript{%
+      \normalfont\bfseries\forcecolor{mainc}{\@thefnmark}%
+    }%
+  }%
+}
+\makeatother

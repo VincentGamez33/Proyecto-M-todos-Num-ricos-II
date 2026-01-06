@@ -406,7 +406,7 @@
 % Redefinir \cite para que use corchetes en el texto [1]
 \DeclareCiteCommand{\cite}
   {\usebibmacro{prenote}}
-  {\mkbibbrackets{\bibhyperref{\printfield{labelnumber}}}}
+  {\mkbibbrackets{\bibhyperref{\forcecolor{mainc}{\bfseries\printfield{labelnumber}}}}}
   {\multicitedelim}
   {\usebibmacro{postnote}}
 

@@ -78,13 +78,13 @@ El análisis gráfico confirma que, para series de tiempo estocásticas con alta
 
 Aunque la interpolación por bloques mitiga exitosamente el fenómeno de Runge, manteniendo las aproximaciones acotadas dentro de rangos realistas, esta técnica introduce una limitación geométrica crítica: la falta de suavidad en los nodos de unión.
 
-Como se aprecia en la `` \ref{fig:lagrange_bloques}, la curva resultante presenta cambios de pendiente abruptos (``esquinas") al pasar de un bloque al siguiente. Matemáticamente, esto implica que la función que aproxima es de clase $C^0$ (continua), pero no pertenece a $C^1$ (diferenciable) en todo el dominio.
+Como se aprecia en la \reffig{lagrange_bloques}, la curva resultante presenta cambios de pendiente abruptos (``esquinas") al pasar de un bloque al siguiente. Matemáticamente, esto implica que la función que aproxima es de clase $C^0$ (continua), pero no pertenece a $C^1$ (diferenciable) en todo el dominio.
 
 Dado que uno de los objetivos centrales de este trabajo es realizar un análisis dinámico mediante \textbf{diferenciación numérica} para estimar la velocidad de cambio de la violencia, la discontinuidad de la derivada en los nodos generaría artefactos numéricos inestables (saltos instantáneos en la tasa de cambio). Por consiguiente, se hace necesario adoptar un modelo que garantice no solo el ajuste a los datos, sino también la continuidad de la primera y segunda derivada ($C^2$): los \textbf{Splines Cúbicos}.
 
 \subsection{Interpolación y Dinámica mediante Splines Cúbicos}
 
-Como respuesta a la necesidad de un modelo diferenciable, se construyó una aproximación mediante **Splines Cúbicos Naturales**. A diferencia de la interpolación por bloques, este método impone condiciones de continuidad en la segunda derivada ($S''(x)$) en cada nodo, garantizando una curvatura suave a lo largo de toda la trayectoria.
+Como respuesta a la necesidad de un modelo diferenciable, se construyó una aproximación mediante \textit{Splines Cúbicos Naturales}. A diferencia de la interpolación por bloques, este método impone condiciones de continuidad en la segunda derivada ($S''(x)$) en cada nodo, garantizando una curvatura suave a lo largo de toda la trayectoria.
 
 \subsubsection{Reconstrucción Suave de la Tendencia}
 
@@ -142,7 +142,7 @@ Para evitar sesgos subjetivos en la identificación de los periodos de interés,
     \item \textbf{Refinamiento Analítico:} Para cada índice candidato, se evalúa la derivada exacta $S'(t)$ sobre el modelo de Spline Cúbico utilizando el esquema de diferenciación centrada de 5 puntos (descrito en la \refsec{02-pre}).
 \end{enumerate}
 
-Este enfoque híbrido permite detectar rápidamente las perturbaciones más violentas en los datos crudos y, posteriormente, cuantificar su velocidad de cambio con la precisión de orden $O(h^4)$ que ofrece el modelo continuo. La `` \reffig{puntos_criticos} muestra la ubicación temporal de estos eventos detectados.
+Este enfoque híbrido permite detectar rápidamente las perturbaciones más violentas en los datos crudos y, posteriormente, cuantificar su velocidad de cambio con la precisión de orden $O(h^4)$ que ofrece el modelo continuo. La \reffig{puntos_criticos} muestra la ubicación temporal de estos eventos detectados.
 
 \begin{figure}[htbp]
     \centering
@@ -169,7 +169,7 @@ Este enfoque híbrido permite detectar rápidamente las perturbaciones más viol
 
 Una vez validado el modelo de Splines, se procedió a calcular su derivada analítica $f'(t)$ para obtener el perfil de velocidad de la incidencia delictiva. A diferencia del conteo bruto de víctimas, esta función revela la \textit{tasa de cambio instantánea}, permitiendo visualizar qué tan rápido se está deteriorando o recuperando la seguridad en un momento dado.
 
-La `` \reffig{derivada_global} presenta este perfil dinámico. Las regiones sombreadas en \textbf{rojo} ($f'(t) > 0$) indican periodos de aceleración de la violencia, donde el número de víctimas crecía mes a mes. Por el contrario, las regiones en \textbf{verde} ($f'(t) < 0$) señalan intervalos de desaceleración o mitigación. La magnitud de la curva (altura) cuantifica la intensidad de estos cambios; picos altos en esta gráfica corresponden a los eventos de ``shock'' o perturbaciones violentas identificadas previamente.
+La \reffig{derivada_global} presenta este perfil dinámico. Las regiones sombreadas en \textbf{rojo} ($f'(t) > 0$) indican periodos de aceleración de la violencia, donde el número de víctimas crecía mes a mes. Por el contrario, las regiones en \textbf{verde} ($f'(t) < 0$) señalan intervalos de desaceleración o mitigación. La magnitud de la curva (altura) cuantifica la intensidad de estos cambios; picos altos en esta gráfica corresponden a los eventos de ``shock'' o perturbaciones violentas identificadas previamente.
 
 \begin{figure}[htbp]
     \centering
