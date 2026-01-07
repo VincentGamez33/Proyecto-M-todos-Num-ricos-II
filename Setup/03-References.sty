@@ -350,7 +350,7 @@
 % Crear referencia para sitio web con link forzado a color mainc
 \DeclareFieldFormat[website]{title}{#1}
 % \DeclareFieldFormat[website]{url}{\forcecolor{mainc}{\bfseries\href{#1}{#1}}}
-\DeclareFieldFormat[website]{url}{\forcecolor{mainc}{\url{#1}}}
+\DeclareFieldFormat[website]{url}{\forcecolor{mainc}{\bfseries\url{#1}}}
 
 \DeclareBibliographyDriver{website}{%
   \usebibmacro{bibindex}%
